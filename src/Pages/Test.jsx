@@ -10,53 +10,58 @@ import {
     DialogClose
 } from "@/components/ui/dialog"
 import { DialogFooter } from '../components/ui/dialog'
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import UploadForm from '../components/ui/UploadForm'
+import { AspectRatio } from "@/components/ui/aspect-ratio"
+import SampleThumbnail from '../assets/SampleThumbnail.jpeg'
+
+
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+    SheetClose
+} from "@/components/ui/sheet"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Heart, Star, X } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import ViewProjectPanel from '../components/ui/ViewProjectPanel'
+
 
 export default function Test() {
     return (
         <div className='w-full h-screen flex justify-center items-center'>
+
             <Dialog>
-                <DialogTrigger><Button>Upload Project</Button></DialogTrigger>
+                <DialogTrigger>Upload Project</DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Upload Project</DialogTitle>
+                        <DialogTitle>Upload File</DialogTitle>
                         <DialogDescription>
+                            Choose the type of project you are uploading:
                         </DialogDescription>
                     </DialogHeader>
 
-                    <form className='flex flex-col items-center gap-5' encType='multipart/form-data'>
+                    <div className='w-full bg-[#A5A5A5] h-24 rounded-md flex justify-center items-center gap-3 p-4'>
+                        <UploadForm type='pdf' />
+                        <UploadForm type='web' />
+                        <UploadForm type='image' />
+                    </div>
 
-                        <img className='aspect-[16/9] object-cover w-full bg-gray-400 rounded-md' />    
-                        <div className='w-full flex flex-col gap-2'>
-                            
-                            <Input type='file'></Input>
-                            <Label>Title</Label>
-                            <Input name='name' type='text'></Input>
-                            <Label>Authors</Label>
-                            <Input name='authors' type='text'></Input>
-                            <Label>Category/Type</Label>
-                            <Popover>
-                                <PopoverTrigger>
-                                    <Input name='category_id' type='text'></Input>
-                                </PopoverTrigger>
-                                <PopoverContent>Place content for the popover here.</PopoverContent>
-                            </Popover>
-
-                        </div>
-                    </form>
-
-                    <DialogFooter>
-                        <DialogClose><Button>Cancel</Button></DialogClose>
-                        <DialogClose><Button>Create</Button></DialogClose>
+                    <DialogFooter >
+                        <DialogClose className='w-full flex justify-center'><div className='bg-contrast text-white rounded-md py-1.5 px-5'>Cancel</div></DialogClose>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            <Sheet >
+                <SheetTrigger>View Project</SheetTrigger>
+                <ViewProjectPanel />
+            </Sheet>
         </div>
     )
 }

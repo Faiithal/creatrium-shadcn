@@ -25,7 +25,7 @@ import dayjs from 'dayjs'
 
 export default function Register() {
     const form = useForm()
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(dayjs());
 
     return (
         <>
@@ -65,7 +65,7 @@ export default function Register() {
                                             )}
                                         >
                                             <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {date ? format(date, 'yyyy-mm-dd') : <span>Pick a date</span>}
+                                            {date ? date.format("YYYY-MM-DD") : <span>Pick a date</span>}
                                         </Button>
                                     </PopoverTrigger>
 
@@ -73,8 +73,8 @@ export default function Register() {
                                         <Calendar
                                             mode="single"
                                             selected={date}
-                                            onSelect={setDate}
-                                            initalFocus
+                                            onSelect={(v) => setDate(dayjs(v))}
+                                            initalFocus 
                                         />
                                     </PopoverContent>
                                 </Popover>

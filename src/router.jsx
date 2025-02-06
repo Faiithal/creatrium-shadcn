@@ -8,6 +8,7 @@ import Projects from './Pages/Projects'
 import NavigationBar from './components/ui/NavigationBar'
 import Profile from './Pages/Profile'
 import Test from './Pages/Test'
+import UserProject from './Pages/UserProject'
 
 // Note: Basically we create a variable of a router for it to be used by a routerProvider in the actual app ^^
 const router = createBrowserRouter([
@@ -43,6 +44,11 @@ const router = createBrowserRouter([
                 path: '/test',
                 element: <Test />
             },
+            {
+                path: '/my-projects',
+                element: <UserProject />
+
+            }
         ]
     },
 ])

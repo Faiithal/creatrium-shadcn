@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import samplePic from '../assets/sampleProfile.png'
 import React from 'react'
 import { Button } from "../components/ui/button"
+import UploadDialog from "../components/ui/UploadDialog"
 
 
 
@@ -29,7 +30,7 @@ export default function ClientHome() {
                             </Avatar>
                             <h2 className='text-4xl font-[Inter] font-bold'>Welcome Nagatoro!</h2>
                         </div>
-                        <Button className='w-64 h-16 text-xl rounded-3xl bg-[#622c2c]'>Upload Project</Button>
+                        <UploadDialog />
                     </div>
 
                     <div className="flex justify-between gap-5 h-full">

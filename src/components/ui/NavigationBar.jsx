@@ -15,7 +15,7 @@ export default function NavigationBar() {
     const navigate = useNavigate();
 
     return (
-        <Sheet>
+        <Sheet >
             <nav className='w-full h-24 flex items-center justify-between px-10 gap-12' style={{ background: 'linear-gradient(90deg, #B08080 0.84%, #AF8484 31.08%, #968585 90.72%)' }}>
 
                 <div onClick={() => navigate('/home')} className='flex items-center gap-3 cursor-pointer'>
@@ -29,9 +29,9 @@ export default function NavigationBar() {
                         <Input className='w-72 text-white' />
                     </div>
                     <div className='w-fit h-2/3 flex justify-around border-solid border-r-2 border-l-2 px-8'>
-                        <Button variant='link' onClick={() => Navigate()} className='text-white font-[Inter] font-normal'>Home</Button>
-                        <Button variant='link' className='text-white font-[Inter] font-normal'>Projects</Button>
-                        <Button variant='link' className='text-white font-[Inter] font-normal'>My Projects</Button>
+                        <Button variant='link' onClick={() => navigate('/home')} className='text-white font-[Inter] font-normal'>Home</Button>
+                        <Button variant='link' onClick={() => navigate('/projects')} className='text-white font-[Inter] font-normal'>Projects</Button>
+                        <Button variant='link' onClick={() => navigate('/my-projects')} className='text-white font-[Inter] font-normal'>My Projects</Button>
                     </div>
                 </div>
                 <SheetTrigger>
@@ -40,7 +40,7 @@ export default function NavigationBar() {
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                 </SheetTrigger>
-                <SheetContent className='w-40 px-0 flex flex-col items-center justify-start bg-slate-900'>
+                <SheetContent className='w-40 px-0 flex flex-col items-center justify-start bg-slate-900 border-none'>
                     <div onClick={() => navigate('/profile')}>
                         <SheetClose>
                             <Avatar className='size-14 border-2 border-black'>
@@ -51,15 +51,15 @@ export default function NavigationBar() {
                     </div>
                     <Collapsible>
                         <CollapsibleTrigger>
-                            <Button className='w-40 bg-transparent hover:bg-slate-950 text-white font-[Inter] text-xl'>Settings</Button>
+                            <Button className='w-40 bg-transparent hover:bg-slate-950 shadow-transparent text-white font-[Inter] text-xl'>Settings</Button>
                         </CollapsibleTrigger>
-                        <CollapsibleContent className='flex flex-col'>
-                            <Button className='bg-transparent hover:bg-slate-950'>Profile</Button>
-                            <Button className='bg-transparent hover:bg-slate-950'>Privacy</Button>
-                            <Button className='bg-transparent hover:bg-slate-950'>Security</Button>
+                        <CollapsibleContent className='flex flex-col '>
+                            <Button onClick={() => navigate('/profile')} className='bg-transparent hover:bg-slate-950 shadow-transparent'>Profile</Button>
+                            <Button className='bg-transparent hover:bg-slate-950 shadow-transparent'>Privacy</Button>
+                            <Button className='bg-transparent hover:bg-slate-950 shadow-transparent'>Security</Button>
                         </CollapsibleContent>
                     </Collapsible>
-                    <Button onClick={() => navigate('/')} className='w-40 bg-transparent hover:bg-slate-950 text-white font-[Inter] text-xl'>Log out</Button>
+                    <Button onClick={() => navigate('/')} className='w-40 bg-transparent shadow-transparent hover:bg-slate-950 text-white font-[Inter] text-xl'>Log out</Button>
                 </SheetContent>
             </nav>
             {/* allows the outside component to connect with other components */}
