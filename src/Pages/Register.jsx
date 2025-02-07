@@ -1,24 +1,25 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 // Shadcn Components
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Button } from '../components/ui/button'
+import { Input } from "../components/ui/input"
 import { Label } from '@radix-ui/react-label'
 import { Separator } from '@radix-ui/react-separator'
-import logo from '../assets/Creatrium_Logo.png'
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import background from '../assets/pexels-cottonbro-3584994.jpg'
+import logo from '../assets/Creatrium_Logo.png'
 import $ from 'jquery'
 
-import Input from '../components/ui/input'
-
+import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
 import dayjs from 'dayjs'
 
 // API
@@ -31,6 +32,7 @@ import { register } from '../api/auth'
 export default function Register() {
     const form = useForm()
     const [date, setDate] = useState(dayjs());
+    const [genderChoice, setGenderChoice] = useState();
 
     const onRegister = (e) => {
         e.preventDefault()
@@ -44,8 +46,8 @@ export default function Register() {
         const section = $("#inpSection").val()
         const campus = +$("#inpCampus").val()
         const course = +$("#inpCourse").val()
-        const acadYear = $("#inpAcademicYear").val()
-        const gender = $("input[name=gender]:checked", "genderForm").val()
+        const academic_year = $("#inpAcademicYear").val()
+        const gender = genderChoice
         const birth_date = date.format("YYYY-MM-DD")
 
         register({
@@ -56,9 +58,10 @@ export default function Register() {
             middle_name,
             last_name,
             affix,
+            campus,
             section,
             course,
-            acadYear,
+            academic_year,
             gender,
             birth_date
         }
@@ -78,7 +81,7 @@ export default function Register() {
                     </div>
                     <div id='registerForm' className=' w-full flex flex-col gap-5'>
                         <h2 className='text-3xl'>Register</h2>
-                        <form onSubmit={(e) => onRegister(e)} className='flex w-full gap-10 justify-between'>
+                        <form onSubmit={(e) => onRegister(e)} className='flex w-full gap-10 justify-between' >
                             <div className="w-full flex flex-col gap-y-5">
                                 <Input required variant="default" id='inpUsername' placeholder="Username" />
                                 <Input required variant="default" type="Password" id='inpPassword' placeholder="Password" />
@@ -130,19 +133,19 @@ export default function Register() {
 
                                 {/* Birthdate Input Code */}
 
-                                <div className="w-3/4 flex flex-col gap-2">
+                                <div className="w-3/4 flex flex-col gap-2" >
                                     <Label>Gender</Label>
-                                    <RadioGroup className="flex justify-between" id='genderForm'>
+                                    <RadioGroup value={genderChoice} onValueChange={setGenderChoice} className="flex justify-between" id='genderForm'>
                                         <div className='flex gap-2 items-center'>
-                                            <RadioGroupItem value='male' name='gender' id='male' />
+                                            <RadioGroupItem value={1} name='gender' id='male' />
                                             <Label htmlFor='male'>Male</Label>
                                         </div>
                                         <div className='flex gap-2 items-center'>
-                                            <RadioGroupItem value='female' name='gender' id='female' />
+                                            <RadioGroupItem value={2} name='gender' id='female' />
                                             <Label htmlFor='female'>Female</Label>
                                         </div>
                                         <div className='flex gap-2 items-center'>
-                                            <RadioGroupItem value='others' name='gender' id='others' />
+                                            <RadioGroupItem value={3} name='gender' id='others' />
                                             <Label htmlFor='others'>Others</Label>
                                         </div>
                                     </RadioGroup>
@@ -154,7 +157,7 @@ export default function Register() {
                                 <Button >Register</Button>
                                 <div className="flex items-center ">
                                     <h4>Already Have an Account?</h4>
-                                    <Button variant='link' className='p-2 h-0 font-[Inter]' onClick={() => navigate('/Login')}>Log in</Button>
+                                    <Button variant='link' className='p-2 h-0 font-[Inter]'>Log in</Button>
                                 </div>
                             </div>
                         </form>
