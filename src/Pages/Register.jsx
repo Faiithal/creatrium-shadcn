@@ -1,24 +1,23 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 // Shadcn Components
-import { Button } from '../components/ui/button'
-import { Input } from "../components/ui/input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from '@radix-ui/react-label'
 import { Separator } from '@radix-ui/react-separator'
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import background from '../assets/pexels-cottonbro-3584994.jpg'
 import logo from '../assets/Creatrium_Logo.png'
+import background from '../assets/pexels-cottonbro-3584994.jpg'
+import { Button } from '../components/ui/button'
+import { Input } from "../components/ui/input"
 
-import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 
-import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 import dayjs from 'dayjs'
 //
 
@@ -74,7 +73,7 @@ export default function Register() {
                                             mode="single"
                                             selected={date}
                                             onSelect={(v) => setDate(dayjs(v))}
-                                            initalFocus 
+                                            initalFocus
                                         />
                                     </PopoverContent>
                                 </Popover>
@@ -105,7 +104,7 @@ export default function Register() {
                                 <Button >Register</Button>
                                 <div className="flex items-center ">
                                     <h4>Already Have an Account?</h4>
-                                    <Button variant='link' className='p-2 h-0 font-[Inter]'>Log in</Button>
+                                    <Button variant='link' className='p-2 h-0 font-[Inter]' onClick={() => navigate('/Login')}>Log in</Button>
                                 </div>
                             </div>
                         </form>
