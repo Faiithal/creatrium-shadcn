@@ -6,8 +6,9 @@ import { Label } from '@radix-ui/react-label'
 import { Separator } from '@radix-ui/react-separator'
 import logo from '../assets/Creatrium_Logo.png'
 import background from '../assets/pexels-cottonbro-3584994.jpg'
-import logo from '../assets/Creatrium_Logo.png'
 import $ from 'jquery'
+
+import Input from '../components/ui/input'
 
 import { Calendar as CalendarIcon } from "lucide-react"
 
@@ -122,7 +123,6 @@ export default function Register() {
                                             mode="single"
                                             selected={date}
                                             onSelect={(v) => setDate(dayjs(v))}
-                                            initalFocus
                                             initalFocus
                                         />
                                     </PopoverContent>

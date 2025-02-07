@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import { Eye, EyeOff } from 'lucide-react';
 import { Separator } from '@radix-ui/react-separator';
 import logo from '../assets/Creatrium_Logo.png';
 import background from '../assets/pexels-cottonbro-3584994.jpg';
-import "@fontsource/pacifico";
-import "@fontsource/inria-sans";
+import Input from '../components/ui/input';
+// import "@fontsource/pacifico";
+// import "@fontsource/inria-sans";
 
 export default function Login() {
     const form = useForm();
