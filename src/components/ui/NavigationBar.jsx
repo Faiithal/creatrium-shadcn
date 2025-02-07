@@ -54,9 +54,15 @@ export default function NavigationBar() {
                             <Button className='w-40 bg-transparent hover:bg-slate-950 shadow-transparent text-white font-[Inter] text-xl'>Settings</Button>
                         </CollapsibleTrigger>
                         <CollapsibleContent className='flex flex-col '>
+                        <SheetClose>
                             <Button onClick={() => navigate('/profile')} className='bg-transparent hover:bg-slate-950 shadow-transparent'>Profile</Button>
+                        </SheetClose>
+                        <SheetClose>
                             <Button className='bg-transparent hover:bg-slate-950 shadow-transparent'>Privacy</Button>
+                        </SheetClose>
+                        <SheetClose>
                             <Button className='bg-transparent hover:bg-slate-950 shadow-transparent'>Security</Button>
+                        </SheetClose>
                         </CollapsibleContent>
                     </Collapsible>
                     <Button onClick={() => navigate('/')} className='w-40 bg-transparent shadow-transparent hover:bg-slate-950 text-white font-[Inter] text-xl'>Log out</Button>

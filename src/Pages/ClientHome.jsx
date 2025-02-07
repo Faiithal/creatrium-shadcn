@@ -3,6 +3,7 @@ import samplePic from '../assets/sampleProfile.png'
 import React from 'react'
 import { Button } from "../components/ui/button"
 import UploadDialog from "../components/ui/UploadDialog"
+import dayjs from "dayjs"
 
 
 
@@ -26,7 +27,6 @@ export default function ClientHome() {
                         <div className='flex items-center gap-x-5'>
                             <Avatar className='size-40'>
                                 <AvatarImage src={samplePic} />
-                                <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                             <h2 className='text-4xl font-[Inter] font-bold'>Welcome Nagatoro!</h2>
                         </div>
@@ -39,12 +39,12 @@ export default function ClientHome() {
                         <div className="w-1/2 rounded-3xl bg-white flex flex-col p-5 gap-3">
                             <h3 className="font-[Inter] font-medium text-xl">Recently Viewed</h3>
                             <div className="flex flex-col xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
-                                <div className='bg-gray-300 w-[19rem] h-44'></div>
-                                <div className='bg-gray-300 w-[19rem] h-44'></div>
+                                <div className='bg-gray-300 w-[19rem] aspect-video'></div>
+                                <div className='bg-gray-300 w-[19rem] aspect-video'></div>
                             </div>
                             <div className="hidden xl:flex justify-center items-stretch gap-3 2xl:h-1/2">
-                                <div className='bg-gray-300 w-[19rem] h-44'></div>
-                                <div className='bg-gray-300 w-[19rem] h-44'></div>
+                                <div className='bg-gray-300 w-[19rem] aspect-video'></div>
+                                <div className='bg-gray-300 w-[19rem] aspect-video'></div>
                             </div>
                         </div>
 
@@ -53,10 +53,10 @@ export default function ClientHome() {
                             <h3 className='font-[Inter] font-medium text-xl'>Recent Projects</h3>
                             <div className="flex flex-col gap-3 items-center h-full">
                                 <div className="2xl:h-1/2 flex flex-col justify-center">
-                                    <div className='bg-gray-300 w-[19rem] h-44'></div>
+                                    <div className='bg-gray-300 w-[19rem] aspect-video'></div>
                                 </div>
                                 <div className="2xl:h-1/2">
-                                    <div className='bg-gray-300 w-[19rem] h-44'></div>
+                                    <div className='bg-gray-300 w-[19rem] aspect-video'></div>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +66,9 @@ export default function ClientHome() {
                             <div className="w-full h-4/5 rounded-3xl bg-white p-5">
                                 <h3 className='font-[Inter] font-medium text-xl'>Online Friends</h3>
                             </div>
-                            <div className="w-full h-1/5 rounded-3xl bg-neutral-800 p-5">
+                            <div className="w-full h-1/5 rounded-3xl bg-neutral-800 p-5 flex flex-col">
+                                <span className="text-white">Date Today:</span>
+                                <span className="text-white">{dayjs().format('MMMM D, YYYY')}</span>
                             </div>
                         </div>
                     </div>

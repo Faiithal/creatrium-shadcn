@@ -1,6 +1,21 @@
 import { URL } from "./configuration"
 
-const login = async(body) => {
+export const register = async(body) => {
+    console.log(body)
+    const request = await fetch(
+        `${URL}/register`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        }
+    )
+    return await request.json()
+}
+
+export const login = async(body) => {
     const request = fetch(
         `${URL}/login`, {
         method: 'POST',
@@ -14,7 +29,7 @@ const login = async(body) => {
     return await request.json()
 }
 
-const checkToken = async(body) => {
+export const checkToken = async(body) => {
     const request = fetch(`${URL}/checktoken`, {
         method: 'GET',
         headers: {

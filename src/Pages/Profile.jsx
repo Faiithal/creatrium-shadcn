@@ -6,6 +6,9 @@ import { Button } from '../components/ui/button'
 import { ChevronRight, Heart, Scroll, Star } from 'lucide-react'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import SampleThumbnail from '../assets/SampleThumbnail.jpeg'
+import SampleThumbnail2 from '../assets/SampleThumbnail2.jpeg'
+import SampleThumbnai3 from '../assets/SampleThumbnail3.png'
+
 
 export default function Profile() {
     return (
@@ -46,7 +49,6 @@ export default function Profile() {
                             <img className='hidden w-[170px] 2xl:block object-cover rounded-md shadow-md'></img>
                             {/* In the case there is more than 4 projects made that may or may not fit in the screen*/}
                             <img className='hidden w-[170px] 3xl:block object-cover rounded-md shadow-md'></img>
-
                         </div>
                     </div>
                 </div>
@@ -62,7 +64,6 @@ export default function Profile() {
                                 <div className='flex items-center gap-1'>
                                     <Avatar className='size-6 md:size-8 lg:size-10 xl:size-12 2xl:size-14 3xl:size-16'>
                                         <AvatarImage src={samplePic} />
-                                        <AvatarFallback>CN</AvatarFallback>
                                     </Avatar>
                                     <h4 className='text-[0.5rem] sm:text-[0.65rem] md:text-sm lg:text-base 2xl:texl-lg 3xl:text-xl'>Nagatoro</h4>
                                     <h5 className='text-[0.5rem] text-[#4c4c4c] md:text-sm lg:text-base 2xl:texl-lg 3xl:text-xl'># days ago</h5>

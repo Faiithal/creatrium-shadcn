@@ -8,6 +8,7 @@ import { Separator } from '@radix-ui/react-separator'
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import background from '../assets/pexels-cottonbro-3584994.jpg'
 import logo from '../assets/Creatrium_Logo.png'
+import $ from 'jquery'
 
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
@@ -20,12 +21,53 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import dayjs from 'dayjs'
+
+// API
+
+import { register } from '../api/auth'
+
 //
 
 
 export default function Register() {
     const form = useForm()
     const [date, setDate] = useState(dayjs());
+
+    const onRegister = (e) => {
+        e.preventDefault()
+        const name = $("#inpUsername").val()
+        const password = $("#inpPassword").val()
+        const password_confirmation = $("#inpConfirmPassword").val()
+        const first_name = $("#inpFirstName").val()
+        const middle_name = $("#inpMiddleName").val()
+        const last_name = $("#inpLastName").val()
+        const affix = $("#inpAffix").val()
+        const section = $("#inpSection").val()
+        const campus = +$("#inpCampus").val()
+        const course = +$("#inpCourse").val()
+        const acadYear = $("#inpAcademicYear").val()
+        const gender = $("input[name=gender]:checked", "genderForm").val()
+        const birth_date = date.format("YYYY-MM-DD")
+
+        register({
+            name,
+            password,
+            password_confirmation,
+            first_name,
+            middle_name,
+            last_name,
+            affix,
+            section,
+            course,
+            acadYear,
+            gender,
+            birth_date
+        }
+        ).then(response => {
+            console.log(response)
+        }
+        )
+    }
 
     return (
         <>
@@ -37,21 +79,29 @@ export default function Register() {
                     </div>
                     <div id='registerForm' className=' w-full flex flex-col gap-5'>
                         <h2 className='text-3xl'>Register</h2>
-                        <form className='flex w-full gap-10 justify-between'>
+                        <form onSubmit={(e) => onRegister(e)} className='flex w-full gap-10 justify-between'>
                             <div className="w-full flex flex-col gap-y-5">
-                                <Input variant="default" placeholder="Username" />
-                                <Input variant="default" type="Password" placeholder="Password" />
-                                <Input variant="default" placeholder="First Name" />
-                                <Input variant="default" placeholder="Middle Name (Optional)" />
-                                <Input variant="default" placeholder="Last Name" />
-                                <Input variant="default" placeholder="Affix. (Optional)" />
+                                <Input required variant="default" id='inpUsername' placeholder="Username" />
+                                <Input required variant="default" type="Password" id='inpPassword' placeholder="Password" />
+                                <Input required variant="default" type="Password" id='inpConfirmPassword' placeholder="Confirm Password" />
+
+                                <Input required variant="default" id='inpFirstName' placeholder="First Name" />
+                                <Input variant="default" id='inpMiddleName' placeholder="Middle Name (Optional)" />
+                                <div className='flex gap-2'>
+                                    <Input className='w-2/3' required variant="default" id='inpLastName' placeholder="Last Name" />
+                                    <Input className='w-1/3' variant="default" id='inpAffix' placeholder="Affix. (Optional)" />
+                                </div>
+
+
                             </div>
                             <Separator className="bg-black w-0.5 h-56 " orientation='vertical' />
                             <div className="w-full flex flex-col gap-5 items-center">
-                                <Input variant="default" placeholder="Section" />
-                                <Input variant="default" placeholder="Course" />
-                                <Input variant="default" placeholder="Academic Year" />
-
+                                <Input required variant="default" id='inpSection' placeholder="Section" />
+                                <div className='flex gap-2'>
+                                    <Input className='w-1/2' variant="default" id='inpCampus' placeholder="Campus" />
+                                    <Input className='w-1/2' required variant="default" id='inpCourse' placeholder="Course" />
+                                </div>
+                                <Input required variant="default" id='inpAcademicYear' placeholder="Academic Year (i.e. 2024, 2025, ...)" />
 
                                 {/* Birthdate Input Code */}
 
@@ -74,7 +124,7 @@ export default function Register() {
                                             mode="single"
                                             selected={date}
                                             onSelect={(v) => setDate(dayjs(v))}
-                                            initalFocus 
+                                            initalFocus
                                         />
                                     </PopoverContent>
                                 </Popover>
@@ -83,17 +133,17 @@ export default function Register() {
 
                                 <div className="w-3/4 flex flex-col gap-2">
                                     <Label>Gender</Label>
-                                    <RadioGroup className="flex justify-between">
+                                    <RadioGroup className="flex justify-between" id='genderForm'>
                                         <div className='flex gap-2 items-center'>
-                                            <RadioGroupItem value='male' id='male' />
+                                            <RadioGroupItem value='male' name='gender' id='male' />
                                             <Label htmlFor='male'>Male</Label>
                                         </div>
                                         <div className='flex gap-2 items-center'>
-                                            <RadioGroupItem value='female' id='female' />
+                                            <RadioGroupItem value='female' name='gender' id='female' />
                                             <Label htmlFor='female'>Female</Label>
                                         </div>
                                         <div className='flex gap-2 items-center'>
-                                            <RadioGroupItem value='others' id='others' />
+                                            <RadioGroupItem value='others' name='gender' id='others' />
                                             <Label htmlFor='others'>Others</Label>
                                         </div>
                                     </RadioGroup>
