@@ -8,7 +8,7 @@ import { Separator } from '@radix-ui/react-separator'
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import background from '../assets/pexels-cottonbro-3584994.jpg'
 import logo from '../assets/Creatrium_Logo.png'
-import $ from 'jquery'
+import $, { isEmptyObject } from 'jquery'
 
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
@@ -25,50 +25,64 @@ import dayjs from 'dayjs'
 // API
 
 import { register } from '../api/auth'
+import { useNavigate } from 'react-router-dom'
 
 //
-
+function isEmpty(str) {
+    return (!str || str.length === 0);
+}
 
 export default function Register() {
     const form = useForm()
-    const [date, setDate] = useState(dayjs());
-    const [genderChoice, setGenderChoice] = useState();
+    const [date, setDate] = useState(dayjs())
+    const [genderChoice, setGenderChoice] = useState()
+    const [loading, setLoading] = useState(false)
+    const [errors, setErrors] = useState()
+    const navigate = useNavigate()
 
     const onRegister = (e) => {
         e.preventDefault()
-        const name = $("#inpUsername").val()
-        const password = $("#inpPassword").val()
-        const password_confirmation = $("#inpConfirmPassword").val()
-        const first_name = $("#inpFirstName").val()
-        const middle_name = $("#inpMiddleName").val()
-        const last_name = $("#inpLastName").val()
-        const affix = $("#inpAffix").val()
-        const section = $("#inpSection").val()
-        const campus = +$("#inpCampus").val()
-        const course = +$("#inpCourse").val()
-        const academic_year = $("#inpAcademicYear").val()
-        const gender = genderChoice
-        const birth_date = date.format("YYYY-MM-DD")
 
-        register({
-            name,
-            password,
-            password_confirmation,
-            first_name,
-            middle_name,
-            last_name,
-            affix,
-            campus,
-            section,
-            course,
-            academic_year,
-            gender,
-            birth_date
+
+        if (!loading) {
+            const body = {
+                name: $("#inpUsername").val(),
+                password: $("#inpPassword").val(),
+                password_confirmation: $("#inpConfirmPassword").val(),
+                first_name: $("#inpFirstName").val(),
+                middle_name: $("#inpMiddleName").val(),
+                last_name: $("#inpLastName").val(),
+                affix: $("#inpAffix").val(),
+                section: $("#inpSection").val(),
+                campus: +$("#inpCampus").val(),
+                course: +$("#inpCourse").val(),
+                academic_year: $("#inpAcademicYear").val(),
+                gender: genderChoice,
+                birth_date: date.format("YYYY-MM-DD")
+            }
+            if (isEmpty(body.middle_name)) {
+                delete body.middle_name
+            }
+            if (isEmpty(body.affix)) {
+                delete body.middle_name
+            }
+
+            setLoading(true)
+            register(body).then(response => {
+                console.log(response)
+                if (response?.ok) {
+                    navigate('/login')
+                }
+                else {
+                    setErrors(response?.data)
+                    console.log(errors)
+                }
+            }
+            ).finally(() => {
+                setLoading(false)
+            }
+            )
         }
-        ).then(response => {
-            console.log(response)
-        }
-        )
     }
 
     return (
@@ -82,29 +96,54 @@ export default function Register() {
                     <div id='registerForm' className=' w-full flex flex-col gap-5'>
                         <h2 className='text-3xl'>Register</h2>
                         <form onSubmit={(e) => onRegister(e)} className='flex w-full gap-10 justify-between' >
-                            <div className="w-full flex flex-col gap-y-5">
-                                <Input required variant="default" id='inpUsername' placeholder="Username" />
-                                <Input required variant="default" type="Password" id='inpPassword' placeholder="Password" />
-                                <Input required variant="default" type="Password" id='inpConfirmPassword' placeholder="Confirm Password" />
-
-                                <Input required variant="default" id='inpFirstName' placeholder="First Name" />
-                                <Input variant="default" id='inpMiddleName' placeholder="Middle Name (Optional)" />
-                                <div className='flex gap-2'>
-                                    <Input className='w-2/3' required variant="default" id='inpLastName' placeholder="Last Name" />
-                                    <Input className='w-1/3' variant="default" id='inpAffix' placeholder="Affix. (Optional)" />
+                            <div className="w-full flex flex-col gap-y-3">
+                                <div>
+                                    <Input required variant="default" id='inpUsername' placeholder="Username" />
+                                    {errors?.username && <span className='text-red-500 text-xs'>{errors?.username}</span>}
                                 </div>
-
+                                <div>
+                                    <Input required variant="default" type="Password" id='inpPassword' placeholder="Password" />
+                                    {errors?.password && <span className='text-red-500 text-xs'>{errors?.password}</span>}
+                                </div>
+                                <div>
+                                    <Input required variant="default" type="Password" id='inpConfirmPassword' placeholder="Confirm Password" />
+                                </div>
+                                <div>
+                                    <Input required variant="default" id='inpFirstName' placeholder="First Name" />
+                                    {errors?.first_name && <span className='text-red-500 text-xs'>{errors?.first_name}</span>}
+                                </div>
+                                <div>
+                                    <Input variant="default" id='inpMiddleName' placeholder="Middle Name (Optional)" />
+                                    {errors?.middle_name && <span className='text-red-500 text-xs'>{errors?.middle_name}</span>}
+                                </div>
+                                <div>
+                                    <div className='flex gap-2'>
+                                        <Input className='w-2/3' required variant="default" id='inpLastName' placeholder="Last Name" />
+                                        <Input className='w-1/3' variant="default" id='inpAffix' placeholder="Affix. (Optional)" />
+                                    </div>
+                                    {errors?.last_name && <span className='text-red-500 text-xs'>{errors?.last_name}</span>}
+                                    {errors?.affix && <span className='text-red-500 text-xs'>{errors?.affix}</span>}
+                                </div>
 
                             </div>
                             <Separator className="bg-black w-0.5 h-56 " orientation='vertical' />
-                            <div className="w-full flex flex-col gap-5 items-center">
-                                <Input required variant="default" id='inpSection' placeholder="Section" />
-                                <div className='flex gap-2'>
-                                    <Input className='w-1/2' variant="default" id='inpCampus' placeholder="Campus" />
-                                    <Input className='w-1/2' required variant="default" id='inpCourse' placeholder="Course" />
+                            <div className="w-full flex flex-col gap-3 items-center">
+                                <div className='w-full'>
+                                    <Input required variant="default" id='inpSection' placeholder="Section" />
+                                    {errors?.section && <span className='text-red-500 text-xs'>{errors?.section}</span>}
                                 </div>
-                                <Input required variant="default" id='inpAcademicYear' placeholder="Academic Year (i.e. 2024, 2025, ...)" />
-
+                                <div className='w-full'>
+                                    <div className='flex gap-2'>
+                                        <Input className='w-1/2' variant="default" id='inpCampus' placeholder="Campus" />
+                                        <Input className='w-1/2' required variant="default" id='inpCourse' placeholder="Course" />
+                                    </div>
+                                    {errors?.campus && <span className='text-red-500 text-xs'>{errors?.campus}</span>}
+                                    {errors?.course && <span className='text-red-500 text-xs'>{errors?.course}</span>}
+                                </div>
+                                <div className='w-full'>
+                                    <Input required variant="default" id='inpAcademicYear' placeholder="Academic Year (i.e. 2024, 2025, ...)" />
+                                    {errors?.academic_year && <span className='text-red-500 text-xs'>{errors?.academic_year}</span>}
+                                </div>
                                 {/* Birthdate Input Code */}
 
                                 <Popover >
@@ -132,7 +171,6 @@ export default function Register() {
                                 </Popover>
 
                                 {/* Birthdate Input Code */}
-
                                 <div className="w-3/4 flex flex-col gap-2" >
                                     <Label>Gender</Label>
                                     <RadioGroup value={genderChoice} onValueChange={setGenderChoice} className="flex justify-between" id='genderForm'>
@@ -154,10 +192,10 @@ export default function Register() {
                                     <Separator className="h-0.5 bg-black w-2/5" />
                                     <Separator className="h-0.5 bg-black w-2/5" />
                                 </div>
-                                <Button >Register</Button>
+                                <Button disabled={loading} >Register</Button>
                                 <div className="flex items-center ">
                                     <h4>Already Have an Account?</h4>
-                                    <Button variant='link' className='p-2 h-0 font-[Inter]'>Log in</Button>
+                                    <Button type='button' onClick={() => navigate('/login')} variant='link' className='p-2 h-0 font-[Inter]'>Log in</Button>
                                 </div>
                             </div>
                         </form>
