@@ -10,10 +10,12 @@ import {
     DialogClose,
     DialogFooter
 } from "@/components/ui/dialog"
-
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function UploadDialog() {
     return (
+        <>
+        <ToastContainer />
         <Dialog>
             <DialogTrigger><div className='w-64 h-16 text-xl rounded-3xl bg-contrast hover:bg-highlight transition-all text-white font-[Inter] flex items-center justify-center font-bold'>Upload Project</div></DialogTrigger>
             <DialogContent>
@@ -35,5 +37,6 @@ export default function UploadDialog() {
                 </DialogFooter>
             </DialogContent>
         </Dialog>
+        </>
     )
 }
