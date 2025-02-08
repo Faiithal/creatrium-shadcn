@@ -43,7 +43,7 @@ export default function Register() {
     const onRegister = (e) => {
         e.preventDefault()
 
-
+        //Fix this later
         if (!loading) {
             const body = {
                 name: $("#inpUsername").val(),

@@ -1,0 +1,22 @@
+import { URL } from '../api/configuration'
+
+export const add = async(body, token) => {
+    console.log(body)
+    const request = await fetch(
+        `${URL}/projects/`,
+        {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: body 
+            //The reason why we don't use stringify it to json is because the formdata body is a multipart form which consists of files
+        }
+    )
+    return await request.json()
+}
+
+export const index = () =>{
+    console.log()
+}

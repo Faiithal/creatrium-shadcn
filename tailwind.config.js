@@ -28,7 +28,8 @@ export default {
 			},
 			backgroundColor: {
 				main: '#D1C1C1',
-				contrast: '#622C2C'
+				contrast: '#622C2C',
+				highlight: '#A13939'
 			},
 			height: {
 				'5/9': '45%'

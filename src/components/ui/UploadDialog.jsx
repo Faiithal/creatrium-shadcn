@@ -15,7 +15,7 @@ import {
 export default function UploadDialog() {
     return (
         <Dialog>
-            <DialogTrigger><div className='w-64 h-16 text-xl rounded-3xl bg-contrast text-white font-[Inter] flex items-center justify-center font-bold'>Upload Project</div></DialogTrigger>
+            <DialogTrigger><div className='w-64 h-16 text-xl rounded-3xl bg-contrast hover:bg-highlight transition-all text-white font-[Inter] flex items-center justify-center font-bold'>Upload Project</div></DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Upload File</DialogTitle>
@@ -31,7 +31,7 @@ export default function UploadDialog() {
                 </div>
 
                 <DialogFooter >
-                    <DialogClose className='w-full flex justify-center'><div className='bg-contrast text-white rounded-md py-1.5 px-5'>Cancel</div></DialogClose>
+                    <DialogClose className='w-full flex justify-center'><div className='bg-contrast hover:bg-highlight transition-all text-sm text-white rounded-md py-2 px-5'>Cancel</div></DialogClose>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

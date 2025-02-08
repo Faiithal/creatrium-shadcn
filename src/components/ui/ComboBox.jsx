@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Check, ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -16,41 +16,36 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-
-const categories = [
-    {
-        value: "webdev",
-        label: "Web Development",
-    },
-    {
-        value: "I.T.",
-        label: "Information Technology",
-    },
-    {
-        value: "Auto",
-        label: "Automotive",
-    },
-    {
-        value: "STEM",
-        label: "Science, Technology, Engineering, Mathematics",
-    },
-    {
-        value: "DAD",
-        label: "Digital Arts & Design",
-    },
-]
+import { index } from '../../api/categories'
 
 
-export default function ComboBox() {
+export default function ComboBox(props) {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState([])
+    const [categories, setCategories] = useState();
+    const [category, setCategory] = useState([])
+
+    useEffect(() => {
+        index().then((res) => {
+            console.log(res)
+            if (res?.ok) {
+                setCategories(res.data)
+            }
+        })
+    }, []
+    )
+
+    useEffect(() => {
+        props.onSelect(value)
+    }, [value])
+
     return (
         <>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    <Button className='gap-1 justify-start p-1' variant='outline'>
-                        {value ? value.map((e) => (
-                            <span className='p-1 rounded-md bg-zinc-200'>{e}</span>
+                    <Button className='min-h-fit max-h-9 gap-1 justify-start p-1 flex flex-wrap' variant='outline'>
+                        {category ? category.map((e) => (
+                            <span key={e} className='p-1 rounded-md bg-zinc-200'>{e}</span>
                         ))
 
                             : "Select a category"}
@@ -62,20 +57,16 @@ export default function ComboBox() {
                         <CommandList>
                             <CommandEmpty>No Framework Found</CommandEmpty>
                             <CommandGroup>
-                                {categories.map((category) => (
+                                {categories?.map((entry) => (
                                     <CommandItem
                                         className=''
-                                        key={category.value}
-                                        value={category.value}
-                                        onSelect={
-                                            (currentValue) => {
-                                                {
-                                                    (value.indexOf(currentValue) != -1) ?
-                                                        setValue(value.filter((e) => { return e != currentValue })) :
-                                                        setValue([...value, currentValue])
-                                                }
-                                            }}>
-                                        {category.label}
+                                        key={entry.id}
+                                        value={entry.id}
+                                        onSelect={(label) => {
+                                            value.indexOf(entry.id) !== -1 ? setValue(value.filter((e) => {return e != entry.id})) : setValue([...value, entry.id])
+                                            category.indexOf(label) !== -1 ? setCategory(category.filter((e) => {return e != label})) : setCategory([...category, label])
+                                        }}>
+                                        {entry.category}
                                     </CommandItem>
                                 ))}
 
