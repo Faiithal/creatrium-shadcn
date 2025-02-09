@@ -27,9 +27,9 @@ export default function UploadDialog() {
                 </DialogHeader>
 
                 <div className='w-full bg-[#A5A5A5] h-24 rounded-md flex justify-center items-center gap-3 p-4'>
-                    <UploadForm type='pdf' />
-                    <UploadForm type='web' />
-                    <UploadForm type='image' />
+                    <UploadForm type='PDF' value='pdf'/>
+                    <UploadForm type='WEB' value='web' />
+                    <UploadForm type='IMAGE' value='img'/>
                 </div>
 
                 <DialogFooter >

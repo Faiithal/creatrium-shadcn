@@ -26,6 +26,8 @@ import dayjs from 'dayjs'
 
 import { register } from '../api/auth'
 import { useNavigate } from 'react-router-dom'
+import CampusComboBox from '../components/ui/CampusComboBox'
+import CourseComboBox from '../components/ui/CourseComboBox'
 
 //
 function isEmpty(str) {
@@ -38,6 +40,8 @@ export default function Register() {
     const [genderChoice, setGenderChoice] = useState()
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState()
+    const [course, setCourse] = useState()
+    const [campus, setCampus] = useState()
     const navigate = useNavigate()
 
     const onRegister = (e) => {
@@ -54,8 +58,8 @@ export default function Register() {
                 last_name: $("#inpLastName").val(),
                 affix: $("#inpAffix").val(),
                 section: $("#inpSection").val(),
-                campus: +$("#inpCampus").val(),
-                course: +$("#inpCourse").val(),
+                campus: campus,
+                course: course,
                 academic_year: $("#inpAcademicYear").val(),
                 gender: genderChoice,
                 birth_date: date.format("YYYY-MM-DD")
@@ -128,17 +132,18 @@ export default function Register() {
                             </div>
                             <Separator className="bg-black w-0.5 h-56 " orientation='vertical' />
                             <div className="w-full flex flex-col gap-3 items-center">
+                                
                                 <div className='w-full'>
-                                    <Input required variant="default" id='inpSection' placeholder="Section" />
-                                    {errors?.section && <span className='text-red-500 text-xs'>{errors?.section}</span>}
-                                </div>
-                                <div className='w-full'>
-                                    <div className='flex gap-2'>
-                                        <Input className='w-1/2' variant="default" id='inpCampus' placeholder="Campus" />
-                                        <Input className='w-1/2' required variant="default" id='inpCourse' placeholder="Course" />
+                                    <div className='flex gap-2 items-center'>
+                                        <CampusComboBox onSelect={setCampus}/>
+                                        <CourseComboBox onSelect={setCourse}/>
                                     </div>
                                     {errors?.campus && <span className='text-red-500 text-xs'>{errors?.campus}</span>}
                                     {errors?.course && <span className='text-red-500 text-xs'>{errors?.course}</span>}
+                                </div>
+                                <div className='w-full'>
+                                    <Input required variant="default" id='inpSection' placeholder="Section" />
+                                    {errors?.section && <span className='text-red-500 text-xs'>{errors?.section}</span>}
                                 </div>
                                 <div className='w-full'>
                                     <Input required variant="default" id='inpAcademicYear' placeholder="Academic Year (i.e. 2024, 2025, ...)" />

@@ -16,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import ComboBox from './ComboBox'
 import { add } from '../../api/projects'
 import { ToastContainer, toast } from 'react-toastify';
+import { Textarea } from "@/components/ui/textarea"
 
 
 const reader = new FileReader();
@@ -25,15 +26,24 @@ export default function UploadForm(props) {
     const [loading, setLoading] = useState(0)
     const [category, setCategory] = useState([])
     const [check, setCheck] = useState(false);
+    const [errors, setErrors] = useState();
+
+
 
     const onCreate = (e) => {
         e.preventDefault()
         if (!loading) {
             setLoading(true)
-
+            const authors = document.getElementById('authors').value
+            const authorsArray = authors && authors.split(',')
+            // console.log(authors.map((e) => e.trim()))
             const body = new FormData(e.target)
-            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMDU4YjFjOWZlZTBhMDczMWM2NTE0MGYyZGNlYTgwY2Y0NWIzN2MyZDFiZDlhMjg2ZmEzMGI2MDhkYjRiZmJhZmZmNmYxZDVkNmQ5YTQ2NTMiLCJpYXQiOjE3Mzg5NzY2MTUuMzk2MjMyLCJuYmYiOjE3Mzg5NzY2MTUuMzk2MjM0LCJleHAiOjE3NzA1MTI2MTUuMjE4MDc3LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.3zF61wJZc-OkO4IDZHQxfRd6x_GoVHCrLvbuS2sFZrWajflWR1hDw6Ja_yRB0MKtKXaWLAwqio5GX40DlvFe_krGKkmvB8iYKgo0lTg7dG7YqrhnnhGT9k8uPc3S6x5Eo2EjGwtnZ115o5QMxOjuV_BX0QXfJ9MAL85jiTpvF-DLyIbav0KjFaCVQRIHCQvpdBOU9hRmXfWx422Jat6ATrAQKGGM7oHlIl8-YngIFmry-0vQw9Ssk5s2yrwW0Bkh1X7a5vZEyhE0qqBBIZo-GrSkbb6WVO8Izd1Sxv9DAIB-H_0nZX3XlNyFcJ3C7s60Audb_utnUqJNG3oRQpauDCwb5tLpJQ2-dY2HTFjbi27qcKqpNVHgK7IHo6JHFuJeVavXr5vYrOdVyhjruttykcTC4uO31tEtJzdN98-xCTgJ9khPQC2SJNwswZOoBijcsHywrT1jNL6SBnyRmygjc0TGpWiWeSq6QrIgL5KeHVuZJgfcaCi5BmAFgDQ_Xgg0UfByn19YTdL7J7gcfEp6u9jo3gcAzRgY5FOIxfLELh4JRkjIxVITVh1qmJX1dwIWtHROWks2Ar3us99wYs-OGoJU3jQHeYE13qDWlETmcb1yz1VJTH-xswI-cUQXEIOC4hjdpCDX9Hyz3GKMAGtA3IrGjvRnByeKb8UbzdbE0HQ'
+            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiN2NlZmI2MmFjNjJiYmYxNzQ2NGQ1MTk1M2NjYjY4NjczYzRkMDBlMGExY2NiNzBjOTNiZTBlZWQ5ODc0ZjkyYmJiYzAwZDFkNmUzZTllOTIiLCJpYXQiOjE3MzkwNTg0NDYuNTgyNDIsIm5iZiI6MTczOTA1ODQ0Ni41ODI0MjMsImV4cCI6MTc3MDU5NDQ0Ni41NzAxNTcsInN1YiI6IjMiLCJzY29wZXMiOltdfQ.OYe5_3lVdGLSR-6bjChfEneDp6zZ8ZpPIovBszUgPI1Zht-87_b2rY-P4WJeuigE2DtKCxnF5ZfECQpkNuofC9nii77yNwI2qLO6j2t7kHxPmYpT5V79x2auRueprKWUa783GJisQPciZ9cjL8YzxTMI2N2iDTZXK2VU3zb-mxa1tVHGXKVGasTBUx_J_ZQIaX0eWOpUyCpnzo7mQxdst74ngglhA7x_EvRXSzwTT03IpBKq-02QKRNMa1vuyPaUpGew_laoSg2KBi_fJpNeApTWE_H7qS3owPH0K1bEam5S0wyupClWJ7xts0cN5oCCUwaUR_jsDXiqoXmTsa3fJQzGGu3m_ylla0lYa-OiEDbK-pJq5xKts4RFjXWkFgwotKNM3fVlC6nkDpMS8FAHUhpBy2W0C-fEdFKkBCV2m9AJohurgj1UqJpEC1PfjNt-q6P9SuA0lrIWOWyGR7T6RXBoWaMoWnsd6UMzyNZawWRqczSJ2A8jLG3PkaZPnV0ZCH518nizZxt1RG1pn7jMyP74RDZKldiOaWR-HCLIKs55pilqyLECNhgzZCN8T4yPtbpZXWbapLyfaf3rwGzVB5rGgdVdFIUPKlj7mre6FC-i_1_8UnL_rXD3HnFD1NKiyw_rYGe9KmVlVnnviogQZ-cxN5Kwkq2B4enWf1vEiFg'
+            body.append('type', props.value)
             body.set('visibility', +check)
+            authors ? body.set('authors[]', authorsArray.map((e) => e.trim())) : body.delete('authors[]')
+
+            console.log(body.getAll)
             if (category.length !== 0) {
                 category.forEach(e => {
                     body.append('categories[]', e)
@@ -49,6 +59,7 @@ export default function UploadForm(props) {
                 }
                 else {
                     toast.error("Invalid input. Please ensure all fields are correctly filled.")
+                    setErrors(res?.data)
                 }
                 console.log(res)
             }).finally(() => {
@@ -58,8 +69,8 @@ export default function UploadForm(props) {
     }
     return (
         <>
-            
-            <Dialog >
+
+            <Dialog onOpenChange={() => setPreview(null)}>
                 <DialogTrigger className='bg-transparent h-2/3 w-1/3 text-white border-solid border-white border-2'>{props.type}</DialogTrigger>
                 <DialogContent className='max-2xl:h-2/3 overflow-y-auto'>
                     <DialogHeader>
@@ -71,13 +82,13 @@ export default function UploadForm(props) {
                     <form onSubmit={(e) => onCreate(e)} className='flex flex-col items-center gap-5' encType='multipart/form-data'>
 
                         <div className='w-full flex flex-col gap-2'>
-                            <Label>Main Icon</Label>
+                            <Label>Main Icon {errors?.file_icon && <span className='text-red-500'>*{errors?.file_icon}*</span>}</Label>
                             <div className='w-full flex justify-center'>
                                 {preview &&
                                     <img id='preview' className='aspect-[16/9] object-cover w-2/3 bg-gray-400 rounded-md' src={preview} />
                                 }
                             </div>
-                            <Input name='icon' type='file'
+                            <Input name='file_icon' type='file'
                                 onChange={
                                     (e) => {
                                         // console.log(URL.createObjectURL(e.target.files))
@@ -90,25 +101,40 @@ export default function UploadForm(props) {
                                     }
                                 }
                             ></Input>
-                            {props.type === 'pdf' &&
+                            {props.type === 'PDF' &&
                                 <>
-                                    <Label>File</Label>
+                                    <Label>File {errors?.file && <span className='text-red-500'>*{errors?.file}*</span>}</Label>
                                     <Input name="file" type='file'></Input>
                                 </>
                             }
-                            {props.type === 'web' &&
+                            {props.type === 'WEB' &&
                                 <>
-                                    <Label>Website link</Label>
+                                    <Label>Website link {errors?.web_link && <span className='text-red-500'>*{errors?.web_link}*</span>}</Label>
                                     <Input name='web_link'></Input>
                                 </>
                             }
-                            <Label>Thumbnails</Label>
+                            <Label>Thumbnails
+                                {
+                                    errors &&
+                                    <div className='flex flex-col gap-1 mt-1'>
+                                        {errors?.thumbnails && <span className='text-red-500'> *{errors?.thumbnails}*</span>}
+                                        {Object.keys(errors).some((error) => {
+                                            return error.startsWith('thumbnails.')
+                                        }
+                                        ) && <span className='text-red-500'> *One of the files is not an image*</span>
+                                        }
+
+                                    </div>
+                                }
+                            </Label>
                             <Input name='thumbnails[]' type='file' multiple></Input>
-                            <Label>Title</Label>
+                            <Label>Title {errors?.name && <span className='text-red-500'>*{errors?.name}*</span>}</Label>
                             <Input name='name' type='text'></Input>
-                            <Label>Authors</Label>
-                            <Input name='authors[]' type='text'></Input>
-                            <Label>Category/Type</Label>
+                            <Label>Description {errors?.desription && <span className='text-red-500'>*{errors?.description}*</span>}</Label>
+                            <Textarea name='description' type='text'></Textarea>
+                            <Label>Authors {errors?.authors && <span className='text-red-500'>*{errors?.authors}*</span>}</Label>
+                            <Input id='authors' name='authors[]' type='text' placeholder='Enter authors (e.g., John Doe, Jane Smith, Alex Johnson)'></Input>
+                            <Label>Category/Type {errors?.categories && <span className='text-red-500'>*{errors?.categories}*</span>}</Label>
                             <ComboBox onSelect={(data) => setCategory(data)} />
                             <div className='flex gap-2'>
                                 <Checkbox checked={check} onCheckedChange={() => setCheck(!check)} name='visibility' id='visibility' />

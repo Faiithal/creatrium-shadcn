@@ -13,20 +13,20 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { index } from '../../api/categories'
+import { index } from '../../api/courses'
 
 
-export default function ComboBox(props) {
+export default function CourseComboBox(props) {
     const [open, setOpen] = useState(false)
-    const [value, setValue] = useState([])
-    const [categories, setCategories] = useState();
-    const [category, setCategory] = useState([])
+    const [value, setValue] = useState()
+    const [courses, setCourses] = useState();
+    const [course, setCourse] = useState()
 
     useEffect(() => {
         index().then((res) => {
             console.log(res)
             if (res?.ok) {
-                setCategories(res.data)
+                setCourses(res.data)
             }
         })
     }, []
@@ -40,30 +40,27 @@ export default function ComboBox(props) {
         <>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    <Button className='min-h-fit max-h-9 gap-1 justify-start p-1 flex flex-wrap' variant='outline'>
-                        {category.length ? category.map((e) => (
-                            <span key={e} className='p-1 rounded-md bg-zinc-200'>{e}</span>
-                        ))
-
-                            : "Select a category"}
+                    <Button className=' min-w-2/3 max-w-64 text-base gap-1 justify-start px-2 py-0 flex flex-wrap overflow-hidden' variant='outline'>
+                    {course ? course : "Select Course"}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent>
                     <Command>
-                        <CommandInput placeholder="search framework" />
+                        <CommandInput placeholder="search course" />
                         <CommandList>
-                            <CommandEmpty>No Framework Found</CommandEmpty>
+                            <CommandEmpty>No Course Found</CommandEmpty>
                             <CommandGroup>
-                                {categories?.map((entry) => (
+                                {courses?.map((entry) => (
                                     <CommandItem
                                         className=''
                                         key={entry.id}
                                         value={entry.id}
-                                        onSelect={(label) => {
-                                            value.indexOf(entry.id) !== -1 ? setValue(value.filter((e) => {return e != entry.id})) : setValue([...value, entry.id])
-                                            category.indexOf(label) !== -1 ? setCategory(category.filter((e) => {return e != label})) : setCategory([...category, label])
+                                        onSelect={(e) => {
+                                            setCourse(e === value ? "" : e)
+                                            setValue(entry.id === value ? null : entry.id)
+                                            setOpen(false)
                                         }}>
-                                        {entry.category}
+                                        {entry.course}
                                     </CommandItem>
                                 ))}
 
