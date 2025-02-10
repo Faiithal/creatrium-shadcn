@@ -6,8 +6,7 @@ import { Button } from '../components/ui/button'
 import { ChevronRight, Heart, Scroll, Star } from 'lucide-react'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import SampleThumbnail from '../assets/SampleThumbnail.jpeg'
-import SampleThumbnail2 from '../assets/SampleThumbnail2.jpeg'
-import SampleThumbnai3 from '../assets/SampleThumbnail3.png'
+
 
 
 export default function Profile() {

@@ -17,6 +17,43 @@ export const add = async(body, token) => {
     return await request.json()
 }
 
-export const index = () =>{
-    console.log()
+export const indexTopRated = async() =>{
+    const request = await fetch(`${URL}/projects/top-rated`, {
+        headers: {
+            Accept: 'application/json',
+        }
+    })
+
+    return await request.json()
 }
+
+export const indexPopular = async() =>{
+    const request = await fetch(`${URL}/projects/popular`, {
+        headers: {
+            Accept: 'application/json',
+        }
+    })
+
+    return await request.json()
+}
+
+export const indexRecent = async() =>{
+    const request = await fetch(`${URL}/projects/recent`, {
+        headers: {
+            Accept: 'application/json',
+        }
+    })
+
+    return await request.json()
+}
+ 
+export const show = async(id) =>{
+    const request = await fetch(`${URL}/projects/${id}`, {
+        headers: {
+            Accept: 'application/json',
+        }
+    })
+
+    return await request.json()
+}
+ 
