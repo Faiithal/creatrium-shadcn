@@ -103,6 +103,7 @@ export default function Projects() {
           </div>
 
           <ViewProjectPanel
+          response={viewData}
           authors={viewData && JSON.parse(viewData?.authors).map((e) => e)}
           title = {viewData?.name}
           categories = {viewData?.categories.map((e) => e.category)}

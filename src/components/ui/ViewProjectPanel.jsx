@@ -32,8 +32,9 @@ import { Oval } from 'react-loader-spinner'
 // Example values
 
 export default function ViewProjectPanel({
+    response,
     authors = "test",
-    title,
+    title = 'test',
     categories = ['Vtuber', 'ASMR'],
     username = 'Nagatoro',
     date = 'February 4, 2025',
@@ -56,8 +57,8 @@ export default function ViewProjectPanel({
     return (
         <SheetContent className='border-none h-fit flex flex-col items-end px-0 py-0 gap-0 bg-transparent' side='bottom'>
             <SheetClose className='text-white h-[5vh] w-12 flex justify-end items-center px-1 py-5'><X className='size-10' /></SheetClose>
-            <ScrollArea className='bg-white h-[90vh] px-10'>
-                {title ?
+            <ScrollArea className='bg-white h-[90vh] px-10 w-full'>
+                {response ?
                     <div className='flex flex-col gap-10 items-center pb-10'>
                         <SheetHeader className='w-full px-20 pt-7'>
                             <div className='flex justify-between'>
@@ -148,8 +149,9 @@ export default function ViewProjectPanel({
                             {authors}
                         </div>
                         <Separator className='w-4/5 h-0.5 bg-black' />
-                        <div className='px-20 text-lg'>
-                            {description}
+                        <div className='w-full gap-1 px-20 text-lg flex flex-col items-start'>
+                            <span className='font-bold'>Description:</span>
+                            <p>{description}</p>
                         </div>
                     </div>
                     : <div className='w-[95vw] h-[95vh] flex justify-center items-center'>

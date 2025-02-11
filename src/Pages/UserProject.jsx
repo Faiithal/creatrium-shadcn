@@ -39,6 +39,36 @@ export default function UserProject() {
                         <SheetTrigger>
                             <ProjectItem />
                         </SheetTrigger>
+                        <SheetTrigger>
+                            <ProjectItem />
+                        </SheetTrigger>
+                        <SheetTrigger>
+                            <ProjectItem />
+                        </SheetTrigger>
+                        <SheetTrigger>
+                            <ProjectItem />
+                        </SheetTrigger>
+                        <SheetTrigger>
+                            <ProjectItem />
+                        </SheetTrigger>
+                        <SheetTrigger>
+                            <ProjectItem />
+                        </SheetTrigger>
+                        <SheetTrigger>
+                            <ProjectItem />
+                        </SheetTrigger>
+                        <SheetTrigger>
+                            <ProjectItem />
+                        </SheetTrigger>
+                        <SheetTrigger>
+                            <ProjectItem />
+                        </SheetTrigger>
+                        <SheetTrigger>
+                            <ProjectItem />
+                        </SheetTrigger>
+                        <SheetTrigger>
+                            <ProjectItem />
+                        </SheetTrigger>
                     </div>
                 </ScrollArea>
             </div>
