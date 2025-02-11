@@ -11,7 +11,7 @@ export default function ProjectItem(props) {
                         <img src={props.thumbnail} className='object-cover w-full h-full rounded-md shadow-md'></img>
                     </AspectRatio>
                 </div>
-                <h3 className='bg-[#777777] w-60 rounded-2xl py-1 px-2 text-white'>{props.name}</h3>
+                <h3 className='bg-[#777777] w-60 h-9 rounded-2xl text-ellipsis whitespace-nowrap overflow-hidden py-1 px-2 text-white'>{props.name}</h3>
             </div>
         </>
     )
