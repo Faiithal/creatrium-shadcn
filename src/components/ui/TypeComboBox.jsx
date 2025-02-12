@@ -17,7 +17,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react'
 
 export default function TypeComboBox(props) {
     const [open, setOpen] = useState(false)
-    
+
     const [value, setValue] = useState()
 
     const type = [
@@ -28,6 +28,18 @@ export default function TypeComboBox(props) {
         props.onSelect(value)
     }, [value])
 
+    useEffect(() => {
+            if (props.currentType == 'pdf') {
+                setValue('pdf')
+            }
+            else if (props.currentFile !== null) {
+                setValue('web')
+            }
+            else {
+                setValue('img')
+            }
+    }, [props.currentType])
+
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -36,7 +48,7 @@ export default function TypeComboBox(props) {
                         {value ? value : "Select a project type"}
                     </div>
                     <div className='bg-contrast size-9 -translate-x-9 rounded-lg flex justify-center items-center'>
-                        { open ? <ChevronUp color='white'/> : <ChevronDown color='white' /> }
+                        {open ? <ChevronUp color='white' /> : <ChevronDown color='white' />}
                     </div>
                 </div>
             </PopoverTrigger>

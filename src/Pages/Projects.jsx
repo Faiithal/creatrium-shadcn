@@ -5,7 +5,7 @@ import samplethumb from '../assets/SampleThumbnail.jpeg'
 import { Button } from '../components/ui/button'
 import { cn } from "@/lib/utils"
 import { indexPopular, indexRecent, indexTopRated, show } from '../api/projects'
-import { URL } from '../api/configuration'
+import { StorageURL } from '../api/configuration'
 
 
 import {
@@ -99,7 +99,7 @@ export default function Projects() {
                   return (
                     <>
                       <SheetTrigger >
-                        <ProjectItem key={project.id} onClick={() => setViewId(project.id)} thumbnail={'http://127.0.0.1:8000/storage/' + project.file_icon} name={project.name} />
+                        <ProjectItem key={project.id} onClick={() => setViewId(project.id)} thumbnail={`${StorageURL}` + project.file_icon} name={project.name} />
                       </SheetTrigger>
                     </>
                   )
@@ -110,16 +110,18 @@ export default function Projects() {
 
           <ViewProjectPanel
             response={viewData}
-            authors={viewData && JSON.parse(viewData?.authors).map((e) => e)}
+            id={viewData?.id}
+            file_icon={`${StorageURL}${viewData?.file_icon}`}
+            authors={viewData && JSON.parse(viewData?.authors)}
             title={viewData?.name}
             categories={viewData?.categories.map((e) => e.category)}
-            thumbnails_source={viewData && JSON.parse(viewData?.thumbnails).map((e) => 'http://127.0.0.1:8000/storage/' + e)}
-            username='Nagatoro'
+            thumbnails_source={(viewData) && (viewData.thumbnails != 'null'? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : console.log('works'))}
+            username='Nagatoro' //saved for auth context
             date='February 4 2025'
             description={viewData?.description}
             profilePic='SamplePic'
             file_type={viewData?.file_extension}
-            file_source={'http://127.0.0.1:8000/storage/' + viewData?.file}
+            file_source={`${StorageURL}` + viewData?.file}
           />
         </Sheet>
       </div>

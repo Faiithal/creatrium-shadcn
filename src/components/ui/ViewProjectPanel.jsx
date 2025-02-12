@@ -29,10 +29,13 @@ import {
 import { cn } from "@/lib/utils"
 
 import { Oval } from 'react-loader-spinner'
+import { useNavigate } from 'react-router-dom'
 // Example values
 
 export default function ViewProjectPanel({
     response,
+    id,
+    file_icon,
     authors = "test",
     title = 'test',
     categories = ['Vtuber', 'ASMR'],
@@ -42,18 +45,14 @@ export default function ViewProjectPanel({
     , profilePic = SamplePic,
     file_type = '', // 3 Options: '' (web), 'pdf' (adds pdf preview), 'png' (only shows thumbnails)
     file_source = "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210101201653/PDF.pdf",
-    thumbnails_source = [
-        SampleThumbnail,
-        SampleThumbnail2,
-        // Why is it that when importing it work instead of just using a string path?
-        // '../../assets/SampleThumbnail3.png', 
-        SampleThumbnail3
-    ]
+    thumbnails_source
 }) {
     const [mainThumbnail, setMainThumbnail] = useState('')
     const [like, setLike] = useState(false) // Modify these 2 lines of code when connecting it to the database
     const [favorite, setFavorite] = useState(false)
     const [deleteView, setDeleteView] = useState(false)
+
+    const navigate = useNavigate();
     return (
         <SheetContent className='border-none h-fit flex flex-col items-end px-0 py-0 gap-0 bg-transparent' side='bottom'>
             <SheetClose className='text-white h-[5vh] w-12 flex justify-end items-center px-1 py-5'><X className='size-10' /></SheetClose>
@@ -79,19 +78,24 @@ export default function ViewProjectPanel({
 
                         {/* Fix this later, make into a theme */}
                         <div className='w-full h-[80vh] pb-11 flex justify-center'>
-                            <div className='w-2/12 h-full flex flex-col items-center justify-center  gap-3'>
-                                {thumbnails_source.map((path) => (
-                                    <>
-                                        <div>
-                                            <img onClick={() => setMainThumbnail(path)} className='w-2/3 aspect-video rounded-md object-cover hover:brightness-50 transition-all shadow-md' src={path} />
-                                            {/* <div className='w-full h-full hover:bg-stone-400 -z-[-1] relative bottom-20'></div> */}
-                                        </div>
-                                    </>
-                                ))}
-                            </div>
+                            {thumbnails_source &&
+                                <>
+
+                                    <div className='w-2/12 h-full flex flex-col items-center justify-center  gap-3'>
+                                        {thumbnails_source.map((path) => (
+                                            <>
+                                                <div>
+                                                    <img onClick={() => setMainThumbnail(path)} className='w-2/3 aspect-video rounded-md object-cover hover:brightness-50 transition-all shadow-md' src={path} />
+                                                    {/* <div className='w-full h-full hover:bg-stone-400 -z-[-1] relative bottom-20'></div> */}
+                                                </div>
+                                            </>
+                                        ))}
+                                    </div>
+                                </>
+                            }
                             <div className='w-8/12 p-8'>
                                 <AspectRatio ratio={16 / 9}>
-                                    <img src={mainThumbnail ? mainThumbnail : thumbnails_source[0]} className='object-cover w-full h-full rounded-md shadow-xl '></img>
+                                    <img src={mainThumbnail ? mainThumbnail : file_icon} className='object-cover w-full h-full rounded-md shadow-xl '></img>
                                 </AspectRatio>
                             </div>
 
@@ -106,7 +110,7 @@ export default function ViewProjectPanel({
                                         <Button asChild className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300' size="icon"><Ellipsis fill={favorite ? '#FFE97B' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
                                     </PopoverTrigger>
                                     <PopoverContent className={cn('h-30  flex flex-col gap-2 items-center w-30', deleteView && 'w-48 h-44 transition-all')}>
-                                        <Button className='p-0 w-24'>Edit</Button>
+                                        <Button onClick={() => navigate(`edit/${id}`)} className='p-0 w-24'>Edit</Button>
                                         <Button className='p-0 w-24' variant='destructive' onClick={() => setDeleteView(!deleteView)}>Delete</Button>
                                         {deleteView &&
                                             <>
@@ -146,12 +150,20 @@ export default function ViewProjectPanel({
                         }
                         <div className='w-4/5 text-xl flex gap-2'>
                             <span className='font-bold'>Author/s:</span>
-                            {authors}
+                            {(() => {
+                                try{
+                                    return JSON.parse(authors)
+                                } catch(e){
+                                    return authors
+                                }
+                            })()
+                            
+                            }
                         </div>
                         <Separator className='w-4/5 h-0.5 bg-black' />
                         <div className='w-full gap-1 px-20 text-lg flex flex-col items-start'>
                             <span className='font-bold'>Description:</span>
-                            <p>{description}</p>
+                            <p className=' whitespace-pre-wrap'>{description}</p>
                         </div>
                     </div>
                     : <div className='w-[95vw] h-[95vh] flex justify-center items-center'>

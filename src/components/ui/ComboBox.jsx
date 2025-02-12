@@ -29,11 +29,28 @@ export default function ComboBox(props) {
                 setCategories(res.data)
             }
         })
+
+        
     }, []
     )
 
     useEffect(() => {
+        if (props.defaultValue) {
+            props.defaultValue.map((v) => {
+                setValue((e) => [...e, v.id])
+                setCategory((e) => [...e, v.category])
+                console.log(v)
+            })
+        }
+        else {
+            console.log('false brother')
+        }
+
+    }, [props.defaultValue])
+
+    useEffect(() => {
         props.onSelect(value)
+
     }, [value])
 
     return (
@@ -44,15 +61,14 @@ export default function ComboBox(props) {
                         {category.length ? category.map((e) => (
                             <span key={e} className='p-1 rounded-md bg-zinc-200'>{e}</span>
                         ))
-
                             : "Select a category"}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent>
                     <Command>
-                        <CommandInput placeholder="search framework" />
+                        <CommandInput placeholder="search category" />
                         <CommandList>
-                            <CommandEmpty>No Framework Found</CommandEmpty>
+                            <CommandEmpty>No Category Found</CommandEmpty>
                             <CommandGroup>
                                 {categories?.map((entry) => (
                                     <CommandItem
@@ -60,8 +76,8 @@ export default function ComboBox(props) {
                                         key={entry.id}
                                         value={entry.id}
                                         onSelect={(label) => {
-                                            value.indexOf(entry.id) !== -1 ? setValue(value.filter((e) => {return e != entry.id})) : setValue([...value, entry.id])
-                                            category.indexOf(label) !== -1 ? setCategory(category.filter((e) => {return e != label})) : setCategory([...category, label])
+                                            value.indexOf(entry.id) !== -1 ? setValue(value.filter((e) => { return e != entry.id })) : setValue([...value, entry.id])
+                                            category.indexOf(label) !== -1 ? setCategory(category.filter((e) => { return e != label })) : setCategory([...category, label])
                                         }}>
                                         {entry.category}
                                     </CommandItem>
