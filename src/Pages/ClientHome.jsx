@@ -1,24 +1,56 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import samplePic from '../assets/sampleProfile.png'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from "../components/ui/button"
 import UploadDialog from "../components/ui/UploadDialog"
 import dayjs from "dayjs"
-
-
-
-
+import { index as historyIndex } from "../api/history"
+import { userProjects } from "../api/profile"
+import { checkToken } from "../api/auth"
+import { StorageURL } from "../api/configuration"
 
 export default function ClientHome() {
+    const [recentViewed, setRecentViewed] = useState()
+    const [recentProjects, setRecentProjects] = useState()
+    const [favoriteProjects, setFavoriteProjects] = useState() // checks id so you have to get the cookie first 
+    const [userData, setUserData] = useState()
 
+    useEffect(() => {
+        const token =
+            'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNkMDM4OTliYzZiZWY0MzE3Y2I4YTE2MjQwZDUwNTQwNWNkNDY2MzgxMzIxNjE2MWZjZDI0OTdjMWJlMzRmZmEwODBmOWJlMjgwMzNjMTUiLCJpYXQiOjE3MzkzNDA4MTYuNzI1OTIzLCJuYmYiOjE3MzkzNDA4MTYuNzI1OTI2LCJleHAiOjE3NzA4NzY4MTYuNTE3ODc2LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.HyoYdODpyzKXclRxDdcrwEdbrVuFHQI4PMFWGtOD9wD_0ywKABH-mJcOvPC_tb0xrg8GOSV3TxgddP1Vx7OXJ7fHoAo4zTv1NGr0zVgRclbUactDI31Q8JEbu5CEzP9Y_PpgG5EDfIy9RqY9HgRxWvuoo2tU1G0H_j-FqhiEThqJFILm2HMFPcFX8jmQfugBCfXgF5o4oOKyCNs7s8sqchO-_neLGkdunPbyGoM8sY6nWQpOOLZYAHL8JDrb_RT0prpgcZipZZUD0MH9Vm_RchzDtbgkkPrPpbH-pTQOrcI0fiwlJf_hYdW2IN6zzPMlFOUSakyCpEFf3ICRYfGx-H1kVMXn7sV57-KkZnCg4tYbTYuBOPsq8RYrYpZruxGQRF0eK6QfsYaECiO2hEyjBEkb0cxmcw4ryfdoWVXez1zoi4FUQ201dW6Dha4J4DMeLL0UE1ZLQy81mmTHJkFXRkb0HtzPnO1CzSyG3AUjZluG1MQFEQfEy0wS481YIOp-GMcy8700OHuzyDybwSwooYdCyD-7s7pydbqkG04ayo9g_CJnq9TGD8osBF8VFrzdg0IgdY3lPXZwBjtpZFbnUgu3RLrjgn94yK2I_Lsa8IDV6_VTWH-uPPtska7Rxc9OB0sRk-UpPOm7RzJhWjMpXcRUt7re4OzmvLT-b_tq9fE'
+        // insert token
+        getUserData(token).then((id) => getRecentProjects(id))
+        getHistory(token)
+    }, [])
 
+    async function getUserData(token) {
+        const user_id = checkToken(token).then((res) => {
+            console.log(res)
+            setUserData(res.data)
+            return res.data.id
+        })
+        return await user_id
+    }
 
+    function getHistory(token) {
+        historyIndex(token).then((res) => {
+            console.log(res)
+            setRecentViewed(res.data)
+        }
+        )
+    }
+
+    function getRecentProjects(id) {
+        userProjects(id).then((res) => {
+            console.log(res)
+            setRecentProjects(res.data)
+        }
+        )
+    }
+
+    // reserved for favorite projects
     return (
         <>
-            {/* Navbar -> For High Order Component */}
-
-
-
             {/* Home Page */}
 
             <div className="bg-[#D4D4D4] w-full h-fit 2xl:h-screen ">
@@ -39,41 +71,37 @@ export default function ClientHome() {
                         <div className="w-1/2 rounded-3xl bg-white flex flex-col p-5 gap-3">
                             <h3 className="font-[Inter] font-medium text-xl">Recently Viewed</h3>
                             <div className="flex flex-col xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
-                                <div className='bg-gray-300 w-[19rem] aspect-video'></div>
-                                <div className='bg-gray-300 w-[19rem] aspect-video'></div>
+                                {recentViewed?.slice(0, 2).map((e) =>
+                                    <img src={`${StorageURL}${e.file_icon}`} className='bg-gray-300 w-[19rem] aspect-video object-cover shadow-md'></img>
+                                )
+                                }
                             </div>
-                            <div className="hidden xl:flex justify-center items-stretch gap-3 2xl:h-1/2">
-                                <div className='bg-gray-300 w-[19rem] aspect-video'></div>
-                                <div className='bg-gray-300 w-[19rem] aspect-video'></div>
-                            </div>
+                            {recentViewed?.length >= 2 &&
+
+                                < div className="hidden xl:flex justify-center items-start gap-3 2xl:h-1/2">
+                                    {recentViewed?.map((e) =>
+                                    <img src={`${StorageURL}${e.file_icon}`} className='bg-gray-300 w-[19rem] aspect-video object-cover shadow-md'></img>
+                                )
+                                }
+                                </div>
+                            }
                         </div>
 
                         {/* Recent Projects */}
-                        <div className="w-2/5 max-2xl:w-1/2 rounded-3xl bg-white flex flex-col p-5 gap-3">
+                        <div className="w-1/2 rounded-3xl bg-white flex flex-col p-5 gap-3">
                             <h3 className='font-[Inter] font-medium text-xl'>Recent Projects</h3>
-                            <div className="flex flex-col gap-3 items-center h-full">
-                                <div className="2xl:h-1/2 flex flex-col justify-center">
-                                    <div className='bg-gray-300 w-[19rem] aspect-video'></div>
-                                </div>
-                                <div className="2xl:h-1/2">
-                                    <div className='bg-gray-300 w-[19rem] aspect-video'></div>
-                                </div>
+                            <div className="flex flex-col xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
+                                <div className='bg-gray-300 w-[19rem] aspect-video max-w-full'></div>
+                                <div className='bg-gray-300 w-[19rem] aspect-video max-w-full'></div>
                             </div>
-                        </div>
-
-                        {/* Friends and Clock */}
-                        <div className="w-1/4 max-2xl:hidden h-full flex flex-col gap-3">
-                            <div className="w-full h-4/5 rounded-3xl bg-white p-5">
-                                <h3 className='font-[Inter] font-medium text-xl'>Online Friends</h3>
-                            </div>
-                            <div className="w-full h-1/5 rounded-3xl bg-neutral-800 p-5 flex flex-col">
-                                <span className="text-white">Date Today:</span>
-                                <span className="text-white">{dayjs().format('MMMM D, YYYY')}</span>
+                            <div className="hidden xl:flex justify-center items-start gap-3 2xl:h-1/2">
+                                <div className='bg-gray-300 w-[19rem] aspect-video max-w-full'></div>
+                                <div className='bg-gray-300 w-[19rem] aspect-video max-w-full'></div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
 
         </>
     )

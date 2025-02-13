@@ -17,6 +17,23 @@ export const add = async(body, token) => {
     return await request.json()
 }
 
+export const update = async(body, token, id) => {
+    console.log(body)
+    const request = await fetch(
+        `${URL}/projects/${id}?_method=PATCH`,
+        {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: body 
+            //The reason why we don't use stringify it to json is because the formdata body is a multipart form which consists of files
+        }
+    )
+    return await request.json()
+}
+
 export const indexTopRated = async() =>{
     const request = await fetch(`${URL}/projects/top-rated`, {
         headers: {

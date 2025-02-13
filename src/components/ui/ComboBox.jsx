@@ -22,24 +22,12 @@ export default function ComboBox(props) {
     const [categories, setCategories] = useState();
     const [category, setCategory] = useState([])
 
-    useEffect(() => {
-        index().then((res) => {
-            console.log(res)
-            if (res?.ok) {
-                setCategories(res.data)
-            }
-        })
-
-        
-    }, []
-    )
-
+    
     useEffect(() => {
         if (props.defaultValue) {
             props.defaultValue.map((v) => {
-                setValue((e) => [...e, v.id])
-                setCategory((e) => [...e, v.category])
-                console.log(v)
+                category.indexOf(v.category) === -1 && setCategory((e) => [...e, v.category])
+                value.indexOf(v.id) === -1 && setValue((e) => [...e, v.id])
             })
         }
         else {

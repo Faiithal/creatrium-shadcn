@@ -18,17 +18,24 @@ import {
   SheetClose
 } from "@/components/ui/sheet"
 import ViewProjectPanel from '../components/ui/ViewProjectPanel'
+import { checkLike } from '../api/likes'
+import { checkFavorite } from '../api/favorites'
+import { store as storeHistory } from '../api/history'
+import { show as checkUser } from '../api/profile'
 
 export default function Projects() {
   const [view, setView] = useState(false)
   const [popular, setPopular] = useState()
   const [topRated, setTopRated] = useState()
   const [recent, setRecent] = useState()
-  const [viewId, setViewId] = useState()
   const [viewData, setViewData] = useState()
   const [seeTopRated, setSeeTopRated] = useState(false)
   const [seePopular, setSeePopular] = useState(false)
   const [seeRecent, setSeeRecent] = useState(false)
+  const [likeData, setLikeData] = useState()
+  const [favoriteData, setFavoriteData] = useState()
+  const [loading, setLoading] = useState()
+  const [userData, setUserData] = useState()
 
   function getPopular() {
     indexPopular().then((res) => {
@@ -68,15 +75,46 @@ export default function Projects() {
   }, [])
 
   // grabs toggled project data
-  useEffect(() => {
+  const onOpen = (viewId) => {
+    const token = 
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNkMDM4OTliYzZiZWY0MzE3Y2I4YTE2MjQwZDUwNTQwNWNkNDY2MzgxMzIxNjE2MWZjZDI0OTdjMWJlMzRmZmEwODBmOWJlMjgwMzNjMTUiLCJpYXQiOjE3MzkzNDA4MTYuNzI1OTIzLCJuYmYiOjE3MzkzNDA4MTYuNzI1OTI2LCJleHAiOjE3NzA4NzY4MTYuNTE3ODc2LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.HyoYdODpyzKXclRxDdcrwEdbrVuFHQI4PMFWGtOD9wD_0ywKABH-mJcOvPC_tb0xrg8GOSV3TxgddP1Vx7OXJ7fHoAo4zTv1NGr0zVgRclbUactDI31Q8JEbu5CEzP9Y_PpgG5EDfIy9RqY9HgRxWvuoo2tU1G0H_j-FqhiEThqJFILm2HMFPcFX8jmQfugBCfXgF5o4oOKyCNs7s8sqchO-_neLGkdunPbyGoM8sY6nWQpOOLZYAHL8JDrb_RT0prpgcZipZZUD0MH9Vm_RchzDtbgkkPrPpbH-pTQOrcI0fiwlJf_hYdW2IN6zzPMlFOUSakyCpEFf3ICRYfGx-H1kVMXn7sV57-KkZnCg4tYbTYuBOPsq8RYrYpZruxGQRF0eK6QfsYaECiO2hEyjBEkb0cxmcw4ryfdoWVXez1zoi4FUQ201dW6Dha4J4DMeLL0UE1ZLQy81mmTHJkFXRkb0HtzPnO1CzSyG3AUjZluG1MQFEQfEy0wS481YIOp-GMcy8700OHuzyDybwSwooYdCyD-7s7pydbqkG04ayo9g_CJnq9TGD8osBF8VFrzdg0IgdY3lPXZwBjtpZFbnUgu3RLrjgn94yK2I_Lsa8IDV6_VTWH-uPPtska7Rxc9OB0sRk-UpPOm7RzJhWjMpXcRUt7re4OzmvLT-b_tq9fE'
+    setLoading(true)
     if (viewId) {
       show(viewId).then((res) => {
         console.log(res)
         setViewData(res.data)
+        storeHistory(res.data.id, token)
+        // Checks Like
+
+        checkUser(res.data.user_id).then((res) => {
+          console.log(res)
+          setUserData(res.data)
+        })
+
+        checkLike(res?.data.id, token).then((res) => {
+          console.log(res)
+          if (res?.ok) {
+            setLikeData(res?.data)
+          }
+        }
+        )
+
+        checkFavorite(res?.data.id, token).then((res) => {
+          console.log(res)
+          if (res?.ok) {
+            setFavoriteData(res?.data)
+          }
+        }
+        ).finally(() => {
+
+          setLoading(false)
+        })
+
       }
       )
     }
-  }, [viewId])
+
+  }
 
   return (
     <>
@@ -97,11 +135,11 @@ export default function Projects() {
               <div className={cn('-translate-y-10 overflow-hidden', !seeTopRated && 'h-50')}>
                 {topRated?.map((project) => {
                   return (
-                    <>
-                      <SheetTrigger >
-                        <ProjectItem key={project.id} onClick={() => setViewId(project.id)} thumbnail={`${StorageURL}` + project.file_icon} name={project.name} />
-                      </SheetTrigger>
-                    </>
+                    <SheetTrigger key={project.id}>
+                      <div key={project.id}>
+                        <ProjectItem onClick={() => onOpen(project.id)} thumbnail={`${StorageURL}` + project.file_icon} name={project.name} />
+                      </div>
+                    </SheetTrigger>
                   )
                 })}
               </div>
@@ -115,13 +153,16 @@ export default function Projects() {
             authors={viewData && JSON.parse(viewData?.authors)}
             title={viewData?.name}
             categories={viewData?.categories.map((e) => e.category)}
-            thumbnails_source={(viewData) && (viewData.thumbnails != 'null'? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : console.log('works'))}
-            username='Nagatoro' //saved for auth context
+            thumbnails_source={(viewData) && (viewData.thumbnails != 'null' ? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : console.log('works'))}
+            username={userData?.user?.name} //saved for auth context
             date='February 4 2025'
             description={viewData?.description}
             profilePic='SamplePic'
             file_type={viewData?.file_extension}
             file_source={`${StorageURL}` + viewData?.file}
+            loading={loading}
+            like_data={likeData?.id}
+            favorite_data={favoriteData?.id}
           />
         </Sheet>
       </div>

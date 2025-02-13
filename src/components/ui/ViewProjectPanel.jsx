@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import SampleThumbnail from '../../assets/SampleThumbnail.jpeg'
 import SampleThumbnail2 from '../../assets/SampleThumbnail2.jpeg'
@@ -30,6 +30,8 @@ import { cn } from "@/lib/utils"
 
 import { Oval } from 'react-loader-spinner'
 import { useNavigate } from 'react-router-dom'
+import { add as addLike, destroy as destroyLike } from '../../api/likes'
+import { add as addFavorite, destroy as destroyFavorite } from '../../api/favorites'
 // Example values
 
 export default function ViewProjectPanel({
@@ -45,19 +47,101 @@ export default function ViewProjectPanel({
     , profilePic = SamplePic,
     file_type = '', // 3 Options: '' (web), 'pdf' (adds pdf preview), 'png' (only shows thumbnails)
     file_source = "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210101201653/PDF.pdf",
-    thumbnails_source
+    thumbnails_source,
+    like_data,
+    favorite_data,
+    loading
 }) {
     const [mainThumbnail, setMainThumbnail] = useState('')
     const [like, setLike] = useState(false) // Modify these 2 lines of code when connecting it to the database
     const [favorite, setFavorite] = useState(false)
     const [deleteView, setDeleteView] = useState(false)
+    const [likeLoading, setLikeLoading] = useState(false)
+    const [favoriteLoading, setFavoriteLoading] = useState(false)
 
     const navigate = useNavigate();
+
+    const toggleLike = () => {
+        const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNkMDM4OTliYzZiZWY0MzE3Y2I4YTE2MjQwZDUwNTQwNWNkNDY2MzgxMzIxNjE2MWZjZDI0OTdjMWJlMzRmZmEwODBmOWJlMjgwMzNjMTUiLCJpYXQiOjE3MzkzNDA4MTYuNzI1OTIzLCJuYmYiOjE3MzkzNDA4MTYuNzI1OTI2LCJleHAiOjE3NzA4NzY4MTYuNTE3ODc2LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.HyoYdODpyzKXclRxDdcrwEdbrVuFHQI4PMFWGtOD9wD_0ywKABH-mJcOvPC_tb0xrg8GOSV3TxgddP1Vx7OXJ7fHoAo4zTv1NGr0zVgRclbUactDI31Q8JEbu5CEzP9Y_PpgG5EDfIy9RqY9HgRxWvuoo2tU1G0H_j-FqhiEThqJFILm2HMFPcFX8jmQfugBCfXgF5o4oOKyCNs7s8sqchO-_neLGkdunPbyGoM8sY6nWQpOOLZYAHL8JDrb_RT0prpgcZipZZUD0MH9Vm_RchzDtbgkkPrPpbH-pTQOrcI0fiwlJf_hYdW2IN6zzPMlFOUSakyCpEFf3ICRYfGx-H1kVMXn7sV57-KkZnCg4tYbTYuBOPsq8RYrYpZruxGQRF0eK6QfsYaECiO2hEyjBEkb0cxmcw4ryfdoWVXez1zoi4FUQ201dW6Dha4J4DMeLL0UE1ZLQy81mmTHJkFXRkb0HtzPnO1CzSyG3AUjZluG1MQFEQfEy0wS481YIOp-GMcy8700OHuzyDybwSwooYdCyD-7s7pydbqkG04ayo9g_CJnq9TGD8osBF8VFrzdg0IgdY3lPXZwBjtpZFbnUgu3RLrjgn94yK2I_Lsa8IDV6_VTWH-uPPtska7Rxc9OB0sRk-UpPOm7RzJhWjMpXcRUt7re4OzmvLT-b_tq9fE' //insert token here
+        setLikeLoading(true)
+        if (like) {
+            destroyLike(id, token).then((res) =>
+                console.log(res)
+            ).finally(() => {
+                setLike(!like)
+                setLikeLoading(false)
+            }
+            )
+        }
+        else {
+            addLike(id, token).then((res) =>
+                console.log(res)
+            ).finally(() => {
+                setLike(!like)
+                setLikeLoading(false)
+            }
+            )
+        }
+    }
+
+    const toggleFavorite = () => {
+        const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNkMDM4OTliYzZiZWY0MzE3Y2I4YTE2MjQwZDUwNTQwNWNkNDY2MzgxMzIxNjE2MWZjZDI0OTdjMWJlMzRmZmEwODBmOWJlMjgwMzNjMTUiLCJpYXQiOjE3MzkzNDA4MTYuNzI1OTIzLCJuYmYiOjE3MzkzNDA4MTYuNzI1OTI2LCJleHAiOjE3NzA4NzY4MTYuNTE3ODc2LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.HyoYdODpyzKXclRxDdcrwEdbrVuFHQI4PMFWGtOD9wD_0ywKABH-mJcOvPC_tb0xrg8GOSV3TxgddP1Vx7OXJ7fHoAo4zTv1NGr0zVgRclbUactDI31Q8JEbu5CEzP9Y_PpgG5EDfIy9RqY9HgRxWvuoo2tU1G0H_j-FqhiEThqJFILm2HMFPcFX8jmQfugBCfXgF5o4oOKyCNs7s8sqchO-_neLGkdunPbyGoM8sY6nWQpOOLZYAHL8JDrb_RT0prpgcZipZZUD0MH9Vm_RchzDtbgkkPrPpbH-pTQOrcI0fiwlJf_hYdW2IN6zzPMlFOUSakyCpEFf3ICRYfGx-H1kVMXn7sV57-KkZnCg4tYbTYuBOPsq8RYrYpZruxGQRF0eK6QfsYaECiO2hEyjBEkb0cxmcw4ryfdoWVXez1zoi4FUQ201dW6Dha4J4DMeLL0UE1ZLQy81mmTHJkFXRkb0HtzPnO1CzSyG3AUjZluG1MQFEQfEy0wS481YIOp-GMcy8700OHuzyDybwSwooYdCyD-7s7pydbqkG04ayo9g_CJnq9TGD8osBF8VFrzdg0IgdY3lPXZwBjtpZFbnUgu3RLrjgn94yK2I_Lsa8IDV6_VTWH-uPPtska7Rxc9OB0sRk-UpPOm7RzJhWjMpXcRUt7re4OzmvLT-b_tq9fE' //insert token here
+        setFavoriteLoading(true)
+        if (favorite) {
+            destroyFavorite(id, token).then((res) =>
+                console.log(res)
+            ).finally(() => {
+                setFavorite(!favorite)
+                setFavoriteLoading(false)
+            }
+            )
+        }
+        else {
+            addFavorite(id, token).then((res) =>
+                console.log(res)
+            ).finally(() => {
+                setFavorite(!favorite)
+                setFavoriteLoading(false)
+            }
+            )
+        }
+    }
+
+    useEffect(
+        () => {
+            setLike(like_data ? true : false)
+            console.log(like_data)
+        }
+        , [like_data])
+
+    useEffect(
+        () => {
+            setFavorite(favorite_data ? true : false)    
+            console.log(favorite_data)
+            
+            
+        }
+        , [favorite_data])
+
     return (
         <SheetContent className='border-none h-fit flex flex-col items-end px-0 py-0 gap-0 bg-transparent' side='bottom'>
             <SheetClose className='text-white h-[5vh] w-12 flex justify-end items-center px-1 py-5'><X className='size-10' /></SheetClose>
             <ScrollArea className='bg-white h-[90vh] px-10 w-full'>
-                {response ?
+                {loading ?
+                    <div className='w-[95vw] h-[95vh] flex justify-center items-center'>
+                        <Oval
+                            height="120"
+                            width="120"
+                            color="#622C2C"
+                            secondaryColor="#D1C1C1"
+                            ariaLabel="oval-loading"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                        />
+                    </div>
+
+                    :
+
                     <div className='flex flex-col gap-10 items-center pb-10'>
                         <SheetHeader className='w-full px-20 pt-7'>
                             <div className='flex justify-between'>
@@ -84,8 +168,8 @@ export default function ViewProjectPanel({
                                     <div className='w-2/12 h-full flex flex-col items-center justify-center  gap-3'>
                                         {thumbnails_source.map((path) => (
                                             <>
-                                                <div>
-                                                    <img onClick={() => setMainThumbnail(path)} className='w-2/3 aspect-video rounded-md object-cover hover:brightness-50 transition-all shadow-md' src={path} />
+                                                <div key={path}>
+                                                    <img onClick={() => setMainThumbnail(path)} className='w-[200px]  aspect-video rounded-md object-cover hover:brightness-50 transition-all shadow-md' src={path} />
                                                     {/* <div className='w-full h-full hover:bg-stone-400 -z-[-1] relative bottom-20'></div> */}
                                                 </div>
                                             </>
@@ -101,8 +185,8 @@ export default function ViewProjectPanel({
 
                             {/* Create a variant for this button for a more clean way of coding */}
                             <div className='w-fit h-full flex flex-col gap-3 items-center py-20'>
-                                <Button asChild onClick={() => setLike(!like)} className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300' size="icon"><Heart fill={like ? '#FF857A' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
-                                <Button asChild onClick={() => setFavorite(!favorite)} className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300' size="icon"><Star fill={favorite ? '#FFE97B' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
+                                <Button asChild disabled={likeLoading} onClick={() => toggleLike()} className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300' size="icon"><Heart fill={like ? '#FF857A' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
+                                <Button asChild disabled={favoriteLoading} onClick={() => toggleFavorite()} className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300' size="icon"><Star fill={favorite ? '#FFE97B' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
 
                                 {/* Note After authentication is added, check user if they own the project*/}
                                 <Popover>
@@ -151,13 +235,13 @@ export default function ViewProjectPanel({
                         <div className='w-4/5 text-xl flex gap-2'>
                             <span className='font-bold'>Author/s:</span>
                             {(() => {
-                                try{
-                                    return JSON.parse(authors)
-                                } catch(e){
+                                try {
+                                    return JSON.parse(authors).reduce((prev, cur) => (prev + ', ' + cur))
+                                } catch (e) {
                                     return authors
                                 }
                             })()
-                            
+
                             }
                         </div>
                         <Separator className='w-4/5 h-0.5 bg-black' />
@@ -165,17 +249,6 @@ export default function ViewProjectPanel({
                             <span className='font-bold'>Description:</span>
                             <p className=' whitespace-pre-wrap'>{description}</p>
                         </div>
-                    </div>
-                    : <div className='w-[95vw] h-[95vh] flex justify-center items-center'>
-                        <Oval
-                            height="120"
-                            width="120"
-                            color="#622C2C"
-                            secondaryColor="#D1C1C1"
-                            ariaLabel="oval-loading"
-                            wrapperStyle={{}}
-                            wrapperClass=""
-                        />
                     </div>
                 }
             </ScrollArea>

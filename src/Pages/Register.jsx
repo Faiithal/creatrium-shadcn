@@ -132,11 +132,11 @@ export default function Register() {
                             </div>
                             <Separator className="bg-black w-0.5 h-56 " orientation='vertical' />
                             <div className="w-full flex flex-col gap-3 items-center">
-                                
+
                                 <div className='w-full'>
                                     <div className='flex gap-2 items-center'>
-                                        <CampusComboBox onSelect={setCampus}/>
-                                        <CourseComboBox onSelect={setCourse}/>
+                                        <CampusComboBox onSelect={setCampus} />
+                                        <CourseComboBox onSelect={setCourse} />
                                     </div>
                                     {errors?.campus && <span className='text-red-500 text-xs'>{errors?.campus}</span>}
                                     {errors?.course && <span className='text-red-500 text-xs'>{errors?.course}</span>}
@@ -177,8 +177,11 @@ export default function Register() {
 
                                 {/* Birthdate Input Code */}
                                 <div className="w-3/4 flex flex-col gap-2" >
-                                    <Label>Gender</Label>
-                                    <RadioGroup value={genderChoice} onValueChange={setGenderChoice} className="flex justify-between" id='genderForm'>
+                                    <div>
+                                        <Label>Gender </Label> 
+                                        {errors?.gender && <span className='text-red-500 text-xs'>{errors?.gender}</span>}
+                                    </div>
+                                    <RadioGroup required value={genderChoice} onValueChange={setGenderChoice} className="flex justify-between" id='genderForm'>
                                         <div className='flex gap-2 items-center'>
                                             <RadioGroupItem value={1} name='gender' id='male' />
                                             <Label htmlFor='male'>Male</Label>
@@ -192,6 +195,7 @@ export default function Register() {
                                             <Label htmlFor='others'>Others</Label>
                                         </div>
                                     </RadioGroup>
+
                                 </div>
                                 <div className='w-4/5 flex justify-between'>
                                     <Separator className="h-0.5 bg-black w-2/5" />
