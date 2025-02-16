@@ -76,8 +76,8 @@ export default function Projects() {
 
   // grabs toggled project data
   const onOpen = (viewId) => {
-    const token = 
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNkMDM4OTliYzZiZWY0MzE3Y2I4YTE2MjQwZDUwNTQwNWNkNDY2MzgxMzIxNjE2MWZjZDI0OTdjMWJlMzRmZmEwODBmOWJlMjgwMzNjMTUiLCJpYXQiOjE3MzkzNDA4MTYuNzI1OTIzLCJuYmYiOjE3MzkzNDA4MTYuNzI1OTI2LCJleHAiOjE3NzA4NzY4MTYuNTE3ODc2LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.HyoYdODpyzKXclRxDdcrwEdbrVuFHQI4PMFWGtOD9wD_0ywKABH-mJcOvPC_tb0xrg8GOSV3TxgddP1Vx7OXJ7fHoAo4zTv1NGr0zVgRclbUactDI31Q8JEbu5CEzP9Y_PpgG5EDfIy9RqY9HgRxWvuoo2tU1G0H_j-FqhiEThqJFILm2HMFPcFX8jmQfugBCfXgF5o4oOKyCNs7s8sqchO-_neLGkdunPbyGoM8sY6nWQpOOLZYAHL8JDrb_RT0prpgcZipZZUD0MH9Vm_RchzDtbgkkPrPpbH-pTQOrcI0fiwlJf_hYdW2IN6zzPMlFOUSakyCpEFf3ICRYfGx-H1kVMXn7sV57-KkZnCg4tYbTYuBOPsq8RYrYpZruxGQRF0eK6QfsYaECiO2hEyjBEkb0cxmcw4ryfdoWVXez1zoi4FUQ201dW6Dha4J4DMeLL0UE1ZLQy81mmTHJkFXRkb0HtzPnO1CzSyG3AUjZluG1MQFEQfEy0wS481YIOp-GMcy8700OHuzyDybwSwooYdCyD-7s7pydbqkG04ayo9g_CJnq9TGD8osBF8VFrzdg0IgdY3lPXZwBjtpZFbnUgu3RLrjgn94yK2I_Lsa8IDV6_VTWH-uPPtska7Rxc9OB0sRk-UpPOm7RzJhWjMpXcRUt7re4OzmvLT-b_tq9fE'
+    const token =
+      'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNkMDM4OTliYzZiZWY0MzE3Y2I4YTE2MjQwZDUwNTQwNWNkNDY2MzgxMzIxNjE2MWZjZDI0OTdjMWJlMzRmZmEwODBmOWJlMjgwMzNjMTUiLCJpYXQiOjE3MzkzNDA4MTYuNzI1OTIzLCJuYmYiOjE3MzkzNDA4MTYuNzI1OTI2LCJleHAiOjE3NzA4NzY4MTYuNTE3ODc2LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.HyoYdODpyzKXclRxDdcrwEdbrVuFHQI4PMFWGtOD9wD_0ywKABH-mJcOvPC_tb0xrg8GOSV3TxgddP1Vx7OXJ7fHoAo4zTv1NGr0zVgRclbUactDI31Q8JEbu5CEzP9Y_PpgG5EDfIy9RqY9HgRxWvuoo2tU1G0H_j-FqhiEThqJFILm2HMFPcFX8jmQfugBCfXgF5o4oOKyCNs7s8sqchO-_neLGkdunPbyGoM8sY6nWQpOOLZYAHL8JDrb_RT0prpgcZipZZUD0MH9Vm_RchzDtbgkkPrPpbH-pTQOrcI0fiwlJf_hYdW2IN6zzPMlFOUSakyCpEFf3ICRYfGx-H1kVMXn7sV57-KkZnCg4tYbTYuBOPsq8RYrYpZruxGQRF0eK6QfsYaECiO2hEyjBEkb0cxmcw4ryfdoWVXez1zoi4FUQ201dW6Dha4J4DMeLL0UE1ZLQy81mmTHJkFXRkb0HtzPnO1CzSyG3AUjZluG1MQFEQfEy0wS481YIOp-GMcy8700OHuzyDybwSwooYdCyD-7s7pydbqkG04ayo9g_CJnq9TGD8osBF8VFrzdg0IgdY3lPXZwBjtpZFbnUgu3RLrjgn94yK2I_Lsa8IDV6_VTWH-uPPtska7Rxc9OB0sRk-UpPOm7RzJhWjMpXcRUt7re4OzmvLT-b_tq9fE'
     setLoading(true)
     if (viewId) {
       show(viewId).then((res) => {
@@ -144,6 +144,54 @@ export default function Projects() {
                 })}
               </div>
             </div>
+
+            <div className={
+              cn('w-full h-[360px] shadow-md p-5 flex flex-col items-center overflow-hidden transition-all',
+                seePopular && 'h-[800px]'
+              )}>
+              <div className='w-full flex flex-col'>
+                <h1 className='text-3xl font-[Inter] font-extrabold'>Popular</h1>
+                <h2 className='font-bold font-[Inter]'>Past Month</h2>
+              </div>
+              <div className={cn('w-full relative top-56 flex justify-end z-10 transition-all', seePopular && 'top-[675px]')}>
+                <Button onClick={() => setSeePopular(!seePopular)}>{seePopular ? 'See Less' : 'See More'}</Button>
+              </div>
+              <div className={cn('-translate-y-10 overflow-hidden', !seePopular && 'h-50')}>
+                {popular?.map((project) => {
+                  return (
+                    <SheetTrigger key={project.id}>
+                      <div key={project.id}>
+                        <ProjectItem onClick={() => onOpen(project.id)} thumbnail={`${StorageURL}` + project.file_icon} name={project.name} />
+                      </div>
+                    </SheetTrigger>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className={
+              cn('w-full h-[360px] shadow-md p-5 flex flex-col items-center overflow-hidden transition-all',
+                seeRecent && 'h-[800px]'
+              )}>
+              <div className='w-full flex flex-col'>
+                <h1 className='text-3xl font-[Inter] font-extrabold'>Recent</h1>
+                <h2 className='font-bold font-[Inter]'>Past Month</h2>
+              </div>
+              <div className={cn('w-full relative top-56 flex justify-end z-10 transition-all', seeRecent && 'top-[675px]')}>
+                <Button onClick={() => setSeeRecent(!seeRecent)}>{seeRecent ? 'See Less' : 'See More'}</Button>
+              </div>
+              <div className={cn('-translate-y-10 overflow-hidden', !seeRecent && 'h-50')}>
+                {recent?.map((project) => {
+                  return (
+                    <SheetTrigger key={project.id}>
+                      <div key={project.id}>
+                        <ProjectItem onClick={() => onOpen(project.id)} thumbnail={`${StorageURL}` + project.file_icon} name={project.name} />
+                      </div>
+                    </SheetTrigger>
+                  )
+                })}
+              </div>
+            </div>
           </div>
 
           <ViewProjectPanel
@@ -155,7 +203,7 @@ export default function Projects() {
             categories={viewData?.categories.map((e) => e.category)}
             thumbnails_source={(viewData) && (viewData.thumbnails != 'null' ? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : console.log('works'))}
             username={userData?.user?.name} //saved for auth context
-            date='February 4 2025'
+            date={viewData?.created_at}
             description={viewData?.description}
             profilePic='SamplePic'
             file_type={viewData?.file_extension}

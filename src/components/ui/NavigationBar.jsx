@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Navigate, Outlet } from 'react-router-dom'
 import { useNavigate } from "react-router-dom"
 
-export default function NavigationBar() {
+export default function NavigationBar({id = 3}) {
 
     const navigate = useNavigate();
 
@@ -41,7 +41,7 @@ export default function NavigationBar() {
                     </Avatar>
                 </SheetTrigger>
                 <SheetContent className='w-40 px-0 flex flex-col items-center justify-start bg-slate-900 border-none'>
-                    <div onClick={() => navigate('/profile')}>
+                    <div onClick={() => navigate(`/profile/${id}`)}>
                         <SheetClose>
                             <Avatar className='size-14 border-2 border-black'>
                                 <AvatarImage src={samplePic} alt="@shadcn" />

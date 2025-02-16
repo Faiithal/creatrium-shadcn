@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Eye, EyeOff } from 'lucide-react';
-import { Separator } from '@radix-ui/react-separator';
-import logo from '../assets/Creatrium_Logo.png';
-import background from '../assets/pexels-cottonbro-3584994.jpg';
-import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Eye, EyeOff } from 'lucide-react'
+import { Separator } from '@radix-ui/react-separator'
+import logo from '../assets/Creatrium_Logo.png'
+import background from '../assets/pexels-cottonbro-3584994.jpg'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../contexts/AuthContext'
+import { login } from '../api/auth'
+
 
 export default function Login() {
     const form = useForm();
     const [passwordVisible, setPasswordVisible] = useState(false);
     const navigate = useNavigate()
+    const { user, login } = useContext(AuthContext)
+    const [loading, setLoading] = useState(false)
+
+    const onLogin = (e) => {
+        e.preventDefault()
+        if(!loading){
+            setLoading()
+            
+        }
+        login()
+    }
+
     return (
         <div className="w-full h-screen bg-stone-300 flex flex-row justify-center max-xl:h-fit gap-2 p-2 font-[Inter]">
             <div className="w-2/3 flex flex-col gap-5 items-center  p-6">

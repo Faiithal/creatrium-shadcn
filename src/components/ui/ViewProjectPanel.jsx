@@ -32,6 +32,7 @@ import { Oval } from 'react-loader-spinner'
 import { useNavigate } from 'react-router-dom'
 import { add as addLike, destroy as destroyLike } from '../../api/likes'
 import { add as addFavorite, destroy as destroyFavorite } from '../../api/favorites'
+import dayjs from 'dayjs'
 // Example values
 
 export default function ViewProjectPanel({
@@ -156,7 +157,7 @@ export default function ViewProjectPanel({
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
                                 <h4>{username}</h4>
-                                <h4 className='text-[#4c4c4c]'>{date}</h4>
+                                <h4 className='text-[#4c4c4c]'>{dayjs(date).format('MMMM D, YYYY')}</h4>
                             </div>
                         </SheetHeader>
 

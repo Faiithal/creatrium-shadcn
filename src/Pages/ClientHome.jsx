@@ -8,8 +8,10 @@ import { index as historyIndex } from "../api/history"
 import { userProjects } from "../api/profile"
 import { checkToken } from "../api/auth"
 import { StorageURL } from "../api/configuration"
+import withAuth from "../high-order-component/withAuth"
+import Home from "./Home"
 
-export default function ClientHome() {
+function ClientHome() {
     const [recentViewed, setRecentViewed] = useState()
     const [recentProjects, setRecentProjects] = useState()
     const [favoriteProjects, setFavoriteProjects] = useState() // checks id so you have to get the cookie first 
@@ -70,19 +72,19 @@ export default function ClientHome() {
                         {/* Recently Viewed Projects */}
                         <div className="w-1/2 rounded-3xl bg-white flex flex-col p-5 gap-3">
                             <h3 className="font-[Inter] font-medium text-xl">Recently Viewed</h3>
-                            <div className="flex flex-col xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
+                            <div className="flex flex-col 2xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
                                 {recentViewed?.slice(0, 2).map((e) =>
-                                    <img src={`${StorageURL}${e.file_icon}`} className='bg-gray-300 w-[19rem] aspect-video object-cover shadow-md'></img>
+                                    <img src={`${StorageURL}${e.file_icon}`} className='bg-gray-300 rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
                                 )
                                 }
                             </div>
                             {recentViewed?.length >= 2 &&
 
-                                < div className="hidden xl:flex justify-center items-start gap-3 2xl:h-1/2">
-                                    {recentViewed?.map((e) =>
-                                    <img src={`${StorageURL}${e.file_icon}`} className='bg-gray-300 w-[19rem] aspect-video object-cover shadow-md'></img>
-                                )
-                                }
+                                < div className="hidden 2xl:flex justify-center items-start gap-3 2xl:h-1/2">
+                                    {recentViewed?.slice(2, 4).map((e) =>
+                                        <img src={`${StorageURL}${e.file_icon}`} className='bg-gray-300 rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
+                                    )
+                                    }
                                 </div>
                             }
                         </div>
@@ -90,7 +92,7 @@ export default function ClientHome() {
                         {/* Recent Projects */}
                         <div className="w-1/2 rounded-3xl bg-white flex flex-col p-5 gap-3">
                             <h3 className='font-[Inter] font-medium text-xl'>Recent Projects</h3>
-                            <div className="flex flex-col xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
+                            {/* <div className="flex flex-col xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
                                 <div className='bg-gray-300 w-[19rem] aspect-video max-w-full'></div>
                                 <div className='bg-gray-300 w-[19rem] aspect-video max-w-full'></div>
                             </div>
@@ -98,6 +100,21 @@ export default function ClientHome() {
                                 <div className='bg-gray-300 w-[19rem] aspect-video max-w-full'></div>
                                 <div className='bg-gray-300 w-[19rem] aspect-video max-w-full'></div>
                             </div>
+                             */}
+                            <div className="flex flex-col xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
+                                {recentProjects?.slice(0, 2).map((e) =>
+                                    <img src={`${StorageURL}${e.file_icon}`} className='bg-gray-300 rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
+                                )
+                                }
+                            </div>
+                            {recentProjects?.length >= 2 &&
+                                < div className="hidden xl:flex justify-center items-start gap-3 2xl:h-1/2">
+                                    {recentProjects?.slice(2, 4).map((e) =>
+                                        <img src={`${StorageURL}${e.file_icon}`} className='bg-gray-300 rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
+                                    )
+                                    }
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -106,3 +123,4 @@ export default function ClientHome() {
         </>
     )
 }
+export default withAuth(Home)

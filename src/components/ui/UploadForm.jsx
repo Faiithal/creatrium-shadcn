@@ -27,9 +27,7 @@ export default function UploadForm(props) {
     const [category, setCategory] = useState([])
     const [check, setCheck] = useState(false);
     const [errors, setErrors] = useState();
-
-
-
+    
     const onCreate = (e) => {
         e.preventDefault()
         if (!loading) {
@@ -51,7 +49,6 @@ export default function UploadForm(props) {
             }
             console.log(category)
             console.log(+check)
-
 
             add(body, token).then((res) => {
                 if (res?.ok) {
