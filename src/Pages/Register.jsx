@@ -28,13 +28,14 @@ import { register } from '../api/auth'
 import { useNavigate } from 'react-router-dom'
 import CampusComboBox from '../components/ui/CampusComboBox'
 import CourseComboBox from '../components/ui/CourseComboBox'
+import withoutAuth from '../high-order-component/withoutAuth'
 
 //
 function isEmpty(str) {
     return (!str || str.length === 0);
 }
 
-export default function Register() {
+function Register() {
     const form = useForm()
     const [date, setDate] = useState(dayjs())
     const [genderChoice, setGenderChoice] = useState()
@@ -62,7 +63,7 @@ export default function Register() {
                 course: course,
                 academic_year: $("#inpAcademicYear").val(),
                 gender: genderChoice,
-                birth_date: date.format("YYYY-MM-DD")
+                birth_date: $("#inpBirthDate").val()
             }
             if (isEmpty(body.middle_name)) {
                 delete body.middle_name
@@ -73,13 +74,11 @@ export default function Register() {
 
             setLoading(true)
             register(body).then(response => {
-                console.log(response)
                 if (response?.ok) {
                     navigate('/login')
                 }
                 else {
                     setErrors(response?.data)
-                    console.log(errors)
                 }
             }
             ).finally(() => {
@@ -149,9 +148,16 @@ export default function Register() {
                                     <Input required variant="default" id='inpAcademicYear' placeholder="Academic Year (i.e. 2024, 2025, ...)" />
                                     {errors?.academic_year && <span className='text-red-500 text-xs'>{errors?.academic_year}</span>}
                                 </div>
+                                <div className='w-full'>
+                                    <div className='flex items-center gap-2'>
+                                        <Label>Birthdate:</Label>
+                                        <Input required type='date' variant="default" className='w-44' id='inpBirthDate' />
+                                    </div>
+                                    {errors?.birth_date && <span className='text-red-500 text-xs'>{errors?.birth_date}</span>}
+                                </div>
                                 {/* Birthdate Input Code */}
 
-                                <Popover >
+                                {/* <Popover >
                                     <PopoverTrigger asChild>
                                         <Button
                                             variant={"outline"}
@@ -173,12 +179,12 @@ export default function Register() {
                                             initalFocus
                                         />
                                     </PopoverContent>
-                                </Popover>
+                                </Popover> */}
 
                                 {/* Birthdate Input Code */}
                                 <div className="w-3/4 flex flex-col gap-2" >
                                     <div>
-                                        <Label>Gender </Label> 
+                                        <Label>Gender </Label>
                                         {errors?.gender && <span className='text-red-500 text-xs'>{errors?.gender}</span>}
                                     </div>
                                     <RadioGroup required value={genderChoice} onValueChange={setGenderChoice} className="flex justify-between" id='genderForm'>
@@ -219,3 +225,4 @@ export default function Register() {
         </>
     )
 }
+export default withoutAuth(Register)

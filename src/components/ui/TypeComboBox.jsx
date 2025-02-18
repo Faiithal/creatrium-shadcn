@@ -32,7 +32,7 @@ export default function TypeComboBox(props) {
             if (props.currentType == 'pdf') {
                 setValue('pdf')
             }
-            else if (props.currentFile !== null) {
+            else if (props.currentFile !== '') {
                 setValue('web')
             }
             else {

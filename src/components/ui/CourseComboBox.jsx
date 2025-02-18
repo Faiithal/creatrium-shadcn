@@ -40,7 +40,7 @@ export default function CourseComboBox(props) {
         <>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    <Button className=' min-w-2/3 max-w-64 text-base gap-1 justify-start px-2 py-0 flex flex-wrap overflow-hidden' variant='outline'>
+                    <Button className='w-3/5 max-w-64 xl:max-w-80 2xl:max-w-96 text-base gap-1 justify-start px-2 py-0 flex flex-wrap overflow-hidden' variant='outline'>
                     {course ? course : "Select Course"}
                     </Button>
                 </PopoverTrigger>

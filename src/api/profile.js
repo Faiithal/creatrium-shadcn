@@ -22,14 +22,14 @@ export const userProjects = async(userId) => {
     return await request.json()
 }
  
-export const update = async(userId) => {
-    const request = await fetch(`${URL}/profile/${userId}`, {
+export const update = async(body, token) => {
+    const request = await fetch(`${URL}/profile/?_method=PATCH`, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(body)
+        body: body
     })
 
     return await request.json()

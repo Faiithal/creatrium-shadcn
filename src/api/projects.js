@@ -1,7 +1,19 @@
 import { URL } from '../api/configuration'
 
+export const search = async(searchQuery) => {
+    const request = await fetch(
+        `${URL}/projects/search/${searchQuery}`,
+        {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        }
+    )
+    return await request.json()
+}
+
 export const add = async(body, token) => {
-    console.log(body)
     const request = await fetch(
         `${URL}/projects/`,
         {
@@ -17,8 +29,21 @@ export const add = async(body, token) => {
     return await request.json()
 }
 
+export const checkProjectLikeFavorite = async(id, token) => {
+    const request = await fetch(
+        `${URL}/projects/check/${id}`,
+        {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+        }
+    )
+    return await request.json()
+}
+
 export const update = async(body, token, id) => {
-    console.log(body)
     const request = await fetch(
         `${URL}/projects/${id}?_method=PATCH`,
         {
@@ -29,6 +54,20 @@ export const update = async(body, token, id) => {
             },
             body: body 
             //The reason why we don't use stringify it to json is because the formdata body is a multipart form which consists of files
+        }
+    )
+    return await request.json()
+}
+
+export const destroy = async(id, token) => {
+    const request = await fetch(
+        `${URL}/projects/${id}`,
+        {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`
+            },
         }
     )
     return await request.json()

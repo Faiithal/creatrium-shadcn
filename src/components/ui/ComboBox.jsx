@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
     Command,
@@ -14,6 +14,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { index } from '../../api/categories'
+import { AuthContext } from '../../contexts/AuthContext'
 
 
 export default function ComboBox(props) {
@@ -21,8 +22,14 @@ export default function ComboBox(props) {
     const [value, setValue] = useState([])
     const [categories, setCategories] = useState();
     const [category, setCategory] = useState([])
-
     
+
+    useEffect(() => {
+        index().then(res =>
+            setCategories(res.data)
+        )
+    }, [])
+
     useEffect(() => {
         if (props.defaultValue) {
             props.defaultValue.map((v) => {

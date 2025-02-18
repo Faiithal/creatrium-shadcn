@@ -3,8 +3,10 @@ import { Button } from '../components/ui/button'
 import background from '../assets/pexels-cottonbro-3584994.jpg'
 import logo from '../assets/Creatrium_Logo.png'
 import { useNavigate } from 'react-router-dom'
+import withAuth from '../high-order-component/withAuth'
+import withoutAuth from '../high-order-component/withoutAuth'
 
-export default function Home() {
+function Home() {
 
   const navigate = useNavigate()
 
@@ -38,3 +40,4 @@ export default function Home() {
     </div>
   )
 }
+export default withoutAuth(Home)

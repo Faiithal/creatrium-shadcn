@@ -2,6 +2,7 @@ import './App.css'
 import { RouterProvider } from 'react-router-dom'
 import router from './router'
 import { AuthProvider } from './contexts/AuthContext'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
 
@@ -10,6 +11,7 @@ function App() {
       <AuthProvider>
         <RouterProvider router={router} />
       </AuthProvider>
+      <ToastContainer />
     </>
   )
 }

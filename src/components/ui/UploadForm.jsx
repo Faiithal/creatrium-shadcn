@@ -17,6 +17,7 @@ import ComboBox from './ComboBox'
 import { add } from '../../api/projects'
 import { ToastContainer, toast } from 'react-toastify';
 import { Textarea } from "@/components/ui/textarea"
+import { useCookies } from 'react-cookie'
 
 
 const reader = new FileReader();
@@ -25,9 +26,10 @@ export default function UploadForm(props) {
     const [preview, setPreview] = useState('')
     const [loading, setLoading] = useState(0)
     const [category, setCategory] = useState([])
-    const [check, setCheck] = useState(false);
-    const [errors, setErrors] = useState();
-    
+    const [check, setCheck] = useState(false)
+    const [errors, setErrors] = useState()
+    const [cookies, setCookie, removeCookie] = useCookies()
+
     const onCreate = (e) => {
         e.preventDefault()
         if (!loading) {
@@ -36,7 +38,7 @@ export default function UploadForm(props) {
             const authorsArray = authors && authors.split(',')
             // console.log(authors.map((e) => e.trim()))
             const body = new FormData(e.target)
-            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiN2NlZmI2MmFjNjJiYmYxNzQ2NGQ1MTk1M2NjYjY4NjczYzRkMDBlMGExY2NiNzBjOTNiZTBlZWQ5ODc0ZjkyYmJiYzAwZDFkNmUzZTllOTIiLCJpYXQiOjE3MzkwNTg0NDYuNTgyNDIsIm5iZiI6MTczOTA1ODQ0Ni41ODI0MjMsImV4cCI6MTc3MDU5NDQ0Ni41NzAxNTcsInN1YiI6IjMiLCJzY29wZXMiOltdfQ.OYe5_3lVdGLSR-6bjChfEneDp6zZ8ZpPIovBszUgPI1Zht-87_b2rY-P4WJeuigE2DtKCxnF5ZfECQpkNuofC9nii77yNwI2qLO6j2t7kHxPmYpT5V79x2auRueprKWUa783GJisQPciZ9cjL8YzxTMI2N2iDTZXK2VU3zb-mxa1tVHGXKVGasTBUx_J_ZQIaX0eWOpUyCpnzo7mQxdst74ngglhA7x_EvRXSzwTT03IpBKq-02QKRNMa1vuyPaUpGew_laoSg2KBi_fJpNeApTWE_H7qS3owPH0K1bEam5S0wyupClWJ7xts0cN5oCCUwaUR_jsDXiqoXmTsa3fJQzGGu3m_ylla0lYa-OiEDbK-pJq5xKts4RFjXWkFgwotKNM3fVlC6nkDpMS8FAHUhpBy2W0C-fEdFKkBCV2m9AJohurgj1UqJpEC1PfjNt-q6P9SuA0lrIWOWyGR7T6RXBoWaMoWnsd6UMzyNZawWRqczSJ2A8jLG3PkaZPnV0ZCH518nizZxt1RG1pn7jMyP74RDZKldiOaWR-HCLIKs55pilqyLECNhgzZCN8T4yPtbpZXWbapLyfaf3rwGzVB5rGgdVdFIUPKlj7mre6FC-i_1_8UnL_rXD3HnFD1NKiyw_rYGe9KmVlVnnviogQZ-cxN5Kwkq2B4enWf1vEiFg'
+            const token = cookies.token
             body.append('type', props.value)
             body.set('visibility', +check)
             authors ? body.set('authors[]', JSON.stringify(authorsArray.map((e) => e.trim()))) : body.delete('authors[]')

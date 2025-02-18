@@ -9,23 +9,40 @@ import logo from '../assets/Creatrium_Logo.png'
 import background from '../assets/pexels-cottonbro-3584994.jpg'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext'
-import { login } from '../api/auth'
+import { login as loginRequest } from '../api/auth'
+import { toast } from 'react-toastify'
+import { useCookies } from 'react-cookie'
+import withoutAuth from '../high-order-component/withoutAuth'
 
 
-export default function Login() {
-    const form = useForm();
-    const [passwordVisible, setPasswordVisible] = useState(false);
+function Login() {
+    const [passwordVisible, setPasswordVisible] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [errors, setErrors] = useState()
     const navigate = useNavigate()
     const { user, login } = useContext(AuthContext)
-    const [loading, setLoading] = useState(false)
+    const [cookies, setCookie, removeCookie] = useCookies()
 
     const onLogin = (e) => {
         e.preventDefault()
-        if(!loading){
-            setLoading()
-            
+        if (!loading) {
+            const body = new FormData(e.target)
+            setLoading(true)
+            loginRequest(body).then(res =>
+            {
+                if(res?.ok){
+                    login(res?.data?.user)
+                    setCookie('token', res?.data?.token)
+                    navigate('/home')
+                }
+                else{
+                    toast.error(res.message)
+                }
+            }
+            ).finally(
+                setLoading(false)
+            )
         }
-        login()
     }
 
     return (
@@ -37,12 +54,13 @@ export default function Login() {
                 </div>
                 <div id='loginForm' className='w-1/2 flex flex-col gap-5'>
                     <h2 className='text-3xl'>Log in</h2>
-                    <form className='flex w-full gap-10 item-center justify-between'>
+                    <form onSubmit={(e) => onLogin(e)} className='flex w-full gap-10 item-center justify-between'>
                         <div className="w-full flex flex-col gap-y-5">
-                            <Input variant="default" placeholder="Username" />
+                            <Input name='name' variant="default" placeholder="Username" />
                             <div className="relative">
                                 <Input
                                     variant="default"
+                                    name='password'
                                     type={passwordVisible ? "text" : "password"}
                                     placeholder="Password"
                                 />
@@ -64,7 +82,7 @@ export default function Login() {
                                 <button className="text-sm text-blue-600 underline">Forgot Password?</button>
                             </div>
                             <div className="w-full flex flex-col gap-5 items-center">
-                                <Button className="w-3/4">Log in</Button>
+                                <Button disabled={loading} className="w-3/4">Log in</Button>
                                 <div className="flex items-center">
                                     <h4>Don’t have an account?</h4>
                                     <Button variant='link' className='p-2 h-0 font-[Inter]' onClick={() => navigate('/Register')}>Register</Button>
@@ -80,5 +98,6 @@ export default function Login() {
                 </div>
             </div>
         </div>
-    );
+    )
 }
+export default withoutAuth(Login)

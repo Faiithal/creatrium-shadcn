@@ -1,7 +1,6 @@
 import { URL } from "./configuration"
 
 export const register = async(body) => {
-    console.log(body)
     const request = await fetch(
         `${URL}/register`, {
             method: 'POST',
@@ -16,14 +15,26 @@ export const register = async(body) => {
 }
 
 export const login = async(body) => {
-    const request = fetch(
+    const request = await fetch(
         `${URL}/login`, {
         method: 'POST',
         headers: {
             Accept: 'application/json', // This receives a response in json format from the api
-            "Content-Type": 'application/json' // This sends the request as a json format to the api
         },
-        body: JSON.stringify(body) // This contains the formdata, 
+        body: body // This contains the formdata, 
+    }
+    )
+    return await request.json()
+}
+
+export const logout = async(token) => {
+    const request = await fetch(
+        `${URL}/logout`, {
+        method: 'DELETE',
+        headers: {
+            Accept: 'application/json', // This receives a response in json format from the api
+            Authorization: `Bearer ${token}`
+        }
     }
     )
     return await request.json()

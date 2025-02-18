@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import ProjectItem from '../components/ui/ProjectItem'
 import samplethumb from '../assets/SampleThumbnail.jpeg'
@@ -6,7 +6,6 @@ import { Button } from '../components/ui/button'
 import { cn } from "@/lib/utils"
 import { indexPopular, indexRecent, indexTopRated, show } from '../api/projects'
 import { StorageURL } from '../api/configuration'
-
 
 import {
   Sheet,
@@ -22,8 +21,11 @@ import { checkLike } from '../api/likes'
 import { checkFavorite } from '../api/favorites'
 import { store as storeHistory } from '../api/history'
 import { show as checkUser } from '../api/profile'
+import { AuthContext } from '../contexts/AuthContext'
+import { useCookies } from 'react-cookie'
+import withAuth from '../high-order-component/withAuth'
 
-export default function Projects() {
+function Projects() {
   const [view, setView] = useState(false)
   const [popular, setPopular] = useState()
   const [topRated, setTopRated] = useState()
@@ -36,6 +38,13 @@ export default function Projects() {
   const [favoriteData, setFavoriteData] = useState()
   const [loading, setLoading] = useState()
   const [userData, setUserData] = useState()
+  const { user } = useContext(AuthContext)
+  const [cookies, setCookie, removeCookie] = useCookies()
+
+  useEffect(() => {
+    console.log(user)
+  }, [user]
+  )
 
   function getPopular() {
     indexPopular().then((res) => {
@@ -76,8 +85,7 @@ export default function Projects() {
 
   // grabs toggled project data
   const onOpen = (viewId) => {
-    const token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNkMDM4OTliYzZiZWY0MzE3Y2I4YTE2MjQwZDUwNTQwNWNkNDY2MzgxMzIxNjE2MWZjZDI0OTdjMWJlMzRmZmEwODBmOWJlMjgwMzNjMTUiLCJpYXQiOjE3MzkzNDA4MTYuNzI1OTIzLCJuYmYiOjE3MzkzNDA4MTYuNzI1OTI2LCJleHAiOjE3NzA4NzY4MTYuNTE3ODc2LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.HyoYdODpyzKXclRxDdcrwEdbrVuFHQI4PMFWGtOD9wD_0ywKABH-mJcOvPC_tb0xrg8GOSV3TxgddP1Vx7OXJ7fHoAo4zTv1NGr0zVgRclbUactDI31Q8JEbu5CEzP9Y_PpgG5EDfIy9RqY9HgRxWvuoo2tU1G0H_j-FqhiEThqJFILm2HMFPcFX8jmQfugBCfXgF5o4oOKyCNs7s8sqchO-_neLGkdunPbyGoM8sY6nWQpOOLZYAHL8JDrb_RT0prpgcZipZZUD0MH9Vm_RchzDtbgkkPrPpbH-pTQOrcI0fiwlJf_hYdW2IN6zzPMlFOUSakyCpEFf3ICRYfGx-H1kVMXn7sV57-KkZnCg4tYbTYuBOPsq8RYrYpZruxGQRF0eK6QfsYaECiO2hEyjBEkb0cxmcw4ryfdoWVXez1zoi4FUQ201dW6Dha4J4DMeLL0UE1ZLQy81mmTHJkFXRkb0HtzPnO1CzSyG3AUjZluG1MQFEQfEy0wS481YIOp-GMcy8700OHuzyDybwSwooYdCyD-7s7pydbqkG04ayo9g_CJnq9TGD8osBF8VFrzdg0IgdY3lPXZwBjtpZFbnUgu3RLrjgn94yK2I_Lsa8IDV6_VTWH-uPPtska7Rxc9OB0sRk-UpPOm7RzJhWjMpXcRUt7re4OzmvLT-b_tq9fE'
+    const token = cookies.token
     setLoading(true)
     if (viewId) {
       show(viewId).then((res) => {
@@ -196,7 +204,12 @@ export default function Projects() {
 
           <ViewProjectPanel
             response={viewData}
+            viewer_id={user?.id}
+            creator_id={viewData?.user_id}
+            fave_count={viewData?.user_favorites_count}
+            like_count={viewData?.user_likes_count}
             id={viewData?.id}
+            gender={userData?.profile?.gender}
             file_icon={`${StorageURL}${viewData?.file_icon}`}
             authors={viewData && JSON.parse(viewData?.authors)}
             title={viewData?.name}
@@ -217,3 +230,5 @@ export default function Projects() {
     </>
   )
 }
+
+export default withAuth(Projects)
