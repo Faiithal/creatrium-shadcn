@@ -14,31 +14,34 @@ import { update } from '../api/profile'
 import { useCookies } from 'react-cookie'
 import { toast } from 'react-toastify'
 import { StorageURL } from '../api/configuration'
+import { useNavigate } from 'react-router-dom'
+import { checkToken } from '../api/auth'
 
 
- function ProfileSettings() {
+function ProfileSettings() {
     const [genderChoice, setGenderChoice] = useState()
     const [course, setCourse] = useState()
     const [campus, setCampus] = useState()
-    const {user} = useContext(AuthContext)
+    const { user, login } = useContext(AuthContext)
     const [cookies, setCookie, removeCookie] = useCookies()
+
+    const navigate = useNavigate();
 
     const onUpdate = (e) => {
         e.preventDefault()
-        const body = new FormData(e.target)
+    const body = new FormData(e.target)
         const token = cookies.token
         course && body.append('course', course)
         campus && body.append('campus', campus)
         genderChoice && body.append('gender', genderChoice)
 
 
-        update(body, token).then((res) => {
-            if(res?.ok){
-                toast.success('Successfully Updated Profile!')
-            }
-            else{
-                toast.error('Something went wrong!')
-            }
+        update(body, token).finally(() => {
+            checkToken(token).then((res) => {
+                if(res?.ok){
+                    login(res.data)
+                }
+            })
         })
     }
 
@@ -46,17 +49,19 @@ import { StorageURL } from '../api/configuration'
         <div className='bg-[#D4D4D4] w-full flex flex-col xl:h-screen xl:overflow-hidden'>
             <div className='w-full h-40 px-10 bg-[#BCBCBC] flex items-center gap-5'>
                 <Avatar className='size-28'>
-                    <AvatarImage src={`${StorageURL}${user?.profile?.image}`} />
+                    <AvatarImage src={`${StorageURL}${user?.profile?.image}?date=${dayjs().format("YYYY-MM-DD HH:mm:ss")}`} />
                     <AvatarFallback><img src={`../../${user?.profile?.gender}Fallback.png`} /></AvatarFallback>
                 </Avatar>
                 <div className='flex flex-col justify-center'>
-                    <span className='font-[Inter] text-xl'>{user?.name}</span>
+                    <span className='font-[Inter] text-xl font-medium'>{user?.name}</span>
                     <span className='font-[Inter]'>{`${user?.profile?.first_name} ${user?.profile?.middle_name ? user?.profile?.middle_name : ''} ${user?.profile?.last_name} ${user?.profile?.affix ? user?.profile.affix : ''}`}</span>
                 </div>
             </div>
-            <form  onSubmit={(e) => onUpdate(e)} className='px-24 h-fit lg:h-full flex flex-col pb-20 xl:pb-0' encType='multipart/form-data'>
+            <form onSubmit={(e) => onUpdate(e)} className='px-24 h-fit lg:h-full flex flex-col pb-20 xl:pb-0' encType='multipart/form-data'>
                 <div className='bg-[#D4D4D4] h-fit flex flex-col lg:flex-row gap-3 lg:gap-20 items-start'>
                     <div className='w-full h-full pt-10 flex flex-col gap-3 items-start'>
+                        <Label>Profile Picture</Label>
+                        <Input type='file' name='image' className='w-full bg-white' />
                         <Label>First Name</Label>
                         <Input defaultValue={user?.profile?.first_name} name='first_name' className='w-full bg-white' />
                         <Label>Middle Name</Label>
@@ -65,8 +70,6 @@ import { StorageURL } from '../api/configuration'
                         <Input defaultValue={user?.profile?.last_name} name='last_name' className='w-full bg-white' />
                         <Label>Affix</Label>
                         <Input defaultValue={user?.profile?.affix} name='affix' className='w-full bg-white' />
-                        <Label>Birth date</Label>
-                        <Input defaultValue={user && dayjs(user?.profile?.birth_date).format("YYYY-MM-DD")} type='date' name='birth_date' className='w-fit bg-white' />
                     </div>
                     <div className='w-full h-full lg:pt-10 flex flex-col gap-4 xl:justify-between'>
                         <div className='flex flex-col gap-3'>
@@ -75,9 +78,9 @@ import { StorageURL } from '../api/configuration'
                             <Label>Academic year</Label>
                             <Input defaultValue={user?.profile?.academic_year} name='academic_year' className='bg-white' />
                             <Label>Course</Label>
-                            <CourseComboBox onSelect={setCourse}/>
+                            <CourseComboBox onSelect={setCourse} />
                             <Label>Campus</Label>
-                            <CampusComboBox onSelect={setCampus}/>
+                            <CampusComboBox onSelect={setCampus} />
                             <Label>Gender</Label>
                             <RadioGroup required defaultValue={genderChoice} onValueChange={setGenderChoice} className="w-2/3 flex justify-between" id='genderForm'>
                                 <div className='flex gap-2 items-center'>

@@ -14,6 +14,7 @@ import { StorageURL } from '../api/configuration'
 import { Oval } from 'react-loader-spinner'
 import { toast, ToastContainer } from 'react-toastify'
 import withAuth from '../high-order-component/withAuth'
+import { useCookies } from 'react-cookie'
 
 function EditProject() {
 
@@ -25,6 +26,7 @@ function EditProject() {
     const [currentProject, setCurrentProject] = useState()
     const [thumbnailPreviews, setThumbnailPreviews] = useState([])
     const [iconPreview, setIconPreview] = useState()
+    const [cookies, setCookie, removeCookie] = useCookies()
 
     const navigate = useNavigate()
     const params = useParams()
@@ -46,11 +48,10 @@ function EditProject() {
 
         // if (!loading) {
         setLoading(true)
-        const authors = document.getElementById('authors').value
+        const authors = document.getElementById('authors').defaultValue
         const authorsArray = authors && authors.split(',')
         const body = new FormData(e.target)
-        const token =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNkMDM4OTliYzZiZWY0MzE3Y2I4YTE2MjQwZDUwNTQwNWNkNDY2MzgxMzIxNjE2MWZjZDI0OTdjMWJlMzRmZmEwODBmOWJlMjgwMzNjMTUiLCJpYXQiOjE3MzkzNDA4MTYuNzI1OTIzLCJuYmYiOjE3MzkzNDA4MTYuNzI1OTI2LCJleHAiOjE3NzA4NzY4MTYuNTE3ODc2LCJzdWIiOiIzIiwic2NvcGVzIjpbXX0.HyoYdODpyzKXclRxDdcrwEdbrVuFHQI4PMFWGtOD9wD_0ywKABH-mJcOvPC_tb0xrg8GOSV3TxgddP1Vx7OXJ7fHoAo4zTv1NGr0zVgRclbUactDI31Q8JEbu5CEzP9Y_PpgG5EDfIy9RqY9HgRxWvuoo2tU1G0H_j-FqhiEThqJFILm2HMFPcFX8jmQfugBCfXgF5o4oOKyCNs7s8sqchO-_neLGkdunPbyGoM8sY6nWQpOOLZYAHL8JDrb_RT0prpgcZipZZUD0MH9Vm_RchzDtbgkkPrPpbH-pTQOrcI0fiwlJf_hYdW2IN6zzPMlFOUSakyCpEFf3ICRYfGx-H1kVMXn7sV57-KkZnCg4tYbTYuBOPsq8RYrYpZruxGQRF0eK6QfsYaECiO2hEyjBEkb0cxmcw4ryfdoWVXez1zoi4FUQ201dW6Dha4J4DMeLL0UE1ZLQy81mmTHJkFXRkb0HtzPnO1CzSyG3AUjZluG1MQFEQfEy0wS481YIOp-GMcy8700OHuzyDybwSwooYdCyD-7s7pydbqkG04ayo9g_CJnq9TGD8osBF8VFrzdg0IgdY3lPXZwBjtpZFbnUgu3RLrjgn94yK2I_Lsa8IDV6_VTWH-uPPtska7Rxc9OB0sRk-UpPOm7RzJhWjMpXcRUt7re4OzmvLT-b_tq9fE"
+        const token = cookies.token
         const id = params.id
         body.append('type', type)
         body.set('visibility', +visibility)
@@ -62,14 +63,7 @@ function EditProject() {
             });
         }
 
-        update(body, token, id).then((res) => {
-            if (res?.ok) {
-                toast.success("Project Successfully Uploaded")
-            }
-            else {
-                toast.error("Invalid input. Please ensure all fields are correctly filled.")
-            }
-        }).finally(() => {
+        update(body, token, id).finally(() => {
             setLoading(false)
         })
     }
@@ -119,7 +113,7 @@ function EditProject() {
                                 </div>
                                 <div className='w-full h-fit flex flex-col gap-1.5'>
                                     <Label>Title:</Label>
-                                    <Input name='name' value={currentProject?.name} className='bg-white' />
+                                    <Input name='name' defaultValue={currentProject?.name} className='bg-white' />
                                     {(() => {
                                         switch (type) {
                                             case 'pdf':
@@ -134,7 +128,7 @@ function EditProject() {
                                                 return (
                                                     <>
                                                         <Label>Project Website Link:</Label>
-                                                        <Input name='web_link' value={currentProject?.file_extension === '' && currentProject?.file} className='bg-white' />
+                                                        <Input name='web_link' defaultValue={currentProject?.file_extension === '' && currentProject?.file} className='bg-white' />
                                                     </>
                                                 )
                                         }
@@ -145,7 +139,7 @@ function EditProject() {
                                     <Label>Categories:</Label>
                                     <ComboBox defaultValue={currentProject?.categories} onSelect={setCategories} />
                                     <Label>Author/s:</Label>
-                                    <Input name='authors[]' id='authors' value={
+                                    <Input name='authors[]' id='authors' defaultValue={
                                         (() => {
                                             if (currentProject) {
                                                 try {
@@ -157,7 +151,7 @@ function EditProject() {
                                             }
                                         })()} className='bg-white' />
                                     <Label>Description:</Label>
-                                    <Textarea name='description' value={currentProject?.description} className='h-44 bg-white text-' />
+                                    <Textarea name='description' defaultValue={currentProject?.description} className='h-44 bg-white text-' />
                                 </div>
                             </div>
                             {/* Insert Array map here and incase if there's no thumbnails*/}

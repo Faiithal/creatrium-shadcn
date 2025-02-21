@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import UploadForm from './UploadForm'
 import {
     Dialog,
@@ -13,6 +13,10 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 
 export default function UploadDialog() {
+    const [openPDF, setOpenPDF] = useState(false)
+    const [openWEB, setOpenWEB] = useState(false)
+    const [openIMG, setOpenIMG] = useState(false)
+
     return (
         <>
         
@@ -27,9 +31,9 @@ export default function UploadDialog() {
                 </DialogHeader>
 
                 <div className='w-full bg-[#A5A5A5] h-24 rounded-md flex justify-center items-center gap-3 p-4'>
-                    <UploadForm type='PDF' value='pdf'/>
-                    <UploadForm type='WEB' value='web' />
-                    <UploadForm type='IMAGE' value='img'/>
+                    <UploadForm open={openPDF} setOpen={setOpenPDF} type='PDF' value='pdf'/>
+                    <UploadForm open={openWEB} setOpen={setOpenWEB} type='WEB' value='web' />
+                    <UploadForm open={openIMG} setOpen={setOpenIMG} type='IMAGE' value='img'/>
                 </div>
 
                 <DialogFooter >

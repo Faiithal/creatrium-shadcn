@@ -1,6 +1,7 @@
+import { toast } from 'react-toastify'
 import { URL } from '../api/configuration'
 
-export const search = async(searchQuery) => {
+export const search = async (searchQuery) => {
     const request = await fetch(
         `${URL}/projects/search/${searchQuery}`,
         {
@@ -13,23 +14,30 @@ export const search = async(searchQuery) => {
     return await request.json()
 }
 
-export const add = async(body, token) => {
-    const request = await fetch(
-        `${URL}/projects/`,
+export const add = async (body, token) => {
+    const request = await toast.promise(
+        fetch(
+            `${URL}/projects`,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: body
+                //The reason why we don't use stringify it to json is because the formdata body is a multipart form which consists of files
+            }
+        ),
         {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                Authorization: `Bearer ${token}`
-            },
-            body: body 
-            //The reason why we don't use stringify it to json is because the formdata body is a multipart form which consists of files
+            pending: 'Uploading Project',
+            success: 'Project successfully uploaded!',
+            error: `There's an error in uploading the Project!`
         }
     )
     return await request.json()
 }
 
-export const checkProjectLikeFavorite = async(id, token) => {
+export const checkProjectLikeFavorite = async (id, token) => {
     const request = await fetch(
         `${URL}/projects/check/${id}`,
         {
@@ -43,23 +51,29 @@ export const checkProjectLikeFavorite = async(id, token) => {
     return await request.json()
 }
 
-export const update = async(body, token, id) => {
-    const request = await fetch(
-        `${URL}/projects/${id}?_method=PATCH`,
+export const update = async (body, token, id) => {
+    const request = await toast.promise(
+        fetch(
+            `${URL}/projects/${id}?_method=PATCH`,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: body
+            }
+        ),
         {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                Authorization: `Bearer ${token}`
-            },
-            body: body 
-            //The reason why we don't use stringify it to json is because the formdata body is a multipart form which consists of files
+            pending: 'Uploading Project',
+            success: 'Project successfully uploaded!',
+            error: `There's an error in uploading the Project!`
         }
     )
     return await request.json()
 }
 
-export const destroy = async(id, token) => {
+export const destroy = async (id, token) => {
     const request = await fetch(
         `${URL}/projects/${id}`,
         {
@@ -73,7 +87,7 @@ export const destroy = async(id, token) => {
     return await request.json()
 }
 
-export const indexTopRated = async() =>{
+export const indexTopRated = async () => {
     const request = await fetch(`${URL}/projects/top-rated`, {
         headers: {
             Accept: 'application/json',
@@ -83,7 +97,7 @@ export const indexTopRated = async() =>{
     return await request.json()
 }
 
-export const indexPopular = async() =>{
+export const indexPopular = async () => {
     const request = await fetch(`${URL}/projects/popular`, {
         headers: {
             Accept: 'application/json',
@@ -93,7 +107,7 @@ export const indexPopular = async() =>{
     return await request.json()
 }
 
-export const indexRecent = async() =>{
+export const indexRecent = async () => {
     const request = await fetch(`${URL}/projects/recent`, {
         headers: {
             Accept: 'application/json',
@@ -102,8 +116,8 @@ export const indexRecent = async() =>{
 
     return await request.json()
 }
- 
-export const show = async(id) =>{
+
+export const show = async (id) => {
     const request = await fetch(`${URL}/projects/${id}`, {
         headers: {
             Accept: 'application/json',
@@ -112,4 +126,3 @@ export const show = async(id) =>{
 
     return await request.json()
 }
- 

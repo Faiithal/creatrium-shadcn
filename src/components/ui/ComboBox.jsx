@@ -38,7 +38,6 @@ export default function ComboBox(props) {
             })
         }
         else {
-            console.log('false brother')
         }
 
     }, [props.defaultValue])

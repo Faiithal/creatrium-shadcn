@@ -7,15 +7,6 @@ import { cn } from "@/lib/utils"
 import { indexPopular, indexRecent, indexTopRated, show } from '../api/projects'
 import { StorageURL } from '../api/configuration'
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  SheetClose
-} from "@/components/ui/sheet"
 import ViewProjectPanel from '../components/ui/ViewProjectPanel'
 import { checkLike } from '../api/likes'
 import { checkFavorite } from '../api/favorites'
@@ -40,22 +31,15 @@ function Projects() {
   const [userData, setUserData] = useState()
   const { user } = useContext(AuthContext)
   const [cookies, setCookie, removeCookie] = useCookies()
+  
+  const [projectView, setProjectView] = useState(false)
 
   useEffect(() => {
-    console.log(user)
   }, [user]
   )
 
   function getPopular() {
     indexPopular().then((res) => {
-      console.log(res)
-      setPopular(res.data)
-    }
-    )
-  }
-  function getPopular() {
-    indexPopular().then((res) => {
-      console.log(res)
       setPopular(res.data)
     }
     )
@@ -63,7 +47,6 @@ function Projects() {
 
   function getTopRated() {
     indexTopRated().then((res) => {
-      console.log(res)
       setTopRated(res.data)
     }
     )
@@ -71,7 +54,6 @@ function Projects() {
 
   function getRecent() {
     indexRecent().then((res) => {
-      console.log(res)
       setRecent(res.data)
     }
     )
@@ -89,18 +71,16 @@ function Projects() {
     setLoading(true)
     if (viewId) {
       show(viewId).then((res) => {
-        console.log(res)
         setViewData(res.data)
         storeHistory(res.data.id, token)
         // Checks Like
 
         checkUser(res.data.user_id).then((res) => {
-          console.log(res)
           setUserData(res.data)
         })
 
         checkLike(res?.data.id, token).then((res) => {
-          console.log(res)
+    
           if (res?.ok) {
             setLikeData(res?.data)
           }
@@ -108,13 +88,11 @@ function Projects() {
         )
 
         checkFavorite(res?.data.id, token).then((res) => {
-          console.log(res)
           if (res?.ok) {
             setFavoriteData(res?.data)
           }
         }
         ).finally(() => {
-
           setLoading(false)
         })
 
@@ -127,7 +105,6 @@ function Projects() {
   return (
     <>
       <div className='w-full h-screen bg-main'>
-        <Sheet>
           <div className='w-full flex flex-col bg-main '>
             <div className={
               cn('w-full h-[360px] shadow-md p-5 flex flex-col items-center overflow-hidden transition-all',
@@ -140,14 +117,12 @@ function Projects() {
               <div className={cn('w-full relative top-56 flex justify-end z-10 transition-all', seeTopRated && 'top-[675px]')}>
                 <Button onClick={() => setSeeTopRated(!seeTopRated)}>{seeTopRated ? 'See Less' : 'See More'}</Button>
               </div>
-              <div className={cn('-translate-y-10 overflow-hidden', !seeTopRated && 'h-50')}>
+              <div className={cn('-translate-y-10 overflow-hidden w-full flex flex-wrap', !seeTopRated && 'h-50')}>
                 {topRated?.map((project) => {
                   return (
-                    <SheetTrigger key={project.id}>
-                      <div key={project.id}>
+                      <div className='w-fit' onClick={() => setProjectView(true)} key={project.id}>
                         <ProjectItem onClick={() => onOpen(project.id)} thumbnail={`${StorageURL}` + project.file_icon} name={project.name} />
                       </div>
-                    </SheetTrigger>
                   )
                 })}
               </div>
@@ -164,14 +139,12 @@ function Projects() {
               <div className={cn('w-full relative top-56 flex justify-end z-10 transition-all', seePopular && 'top-[675px]')}>
                 <Button onClick={() => setSeePopular(!seePopular)}>{seePopular ? 'See Less' : 'See More'}</Button>
               </div>
-              <div className={cn('-translate-y-10 overflow-hidden', !seePopular && 'h-50')}>
+              <div className={cn('-translate-y-10 overflow-hidden w-full flex flex-wrap', !seePopular && 'h-50 w-full flex flex-wrap0')}>
                 {popular?.map((project) => {
                   return (
-                    <SheetTrigger key={project.id}>
-                      <div key={project.id}>
+                      <div onClick={() => setProjectView(true)} key={project.id}>
                         <ProjectItem onClick={() => onOpen(project.id)} thumbnail={`${StorageURL}` + project.file_icon} name={project.name} />
                       </div>
-                    </SheetTrigger>
                   )
                 })}
               </div>
@@ -188,14 +161,12 @@ function Projects() {
               <div className={cn('w-full relative top-56 flex justify-end z-10 transition-all', seeRecent && 'top-[675px]')}>
                 <Button onClick={() => setSeeRecent(!seeRecent)}>{seeRecent ? 'See Less' : 'See More'}</Button>
               </div>
-              <div className={cn('-translate-y-10 overflow-hidden', !seeRecent && 'h-50')}>
+              <div className={cn('-translate-y-10 overflow-hidden w-full flex flex-wrap', !seeRecent && 'h-50 w-full flex flex-wrap')}>
                 {recent?.map((project) => {
                   return (
-                    <SheetTrigger key={project.id}>
-                      <div key={project.id}>
+                      <div onClick={() => setProjectView(true)} key={project.id}>
                         <ProjectItem onClick={() => onOpen(project.id)} thumbnail={`${StorageURL}` + project.file_icon} name={project.name} />
                       </div>
-                    </SheetTrigger>
                   )
                 })}
               </div>
@@ -203,6 +174,8 @@ function Projects() {
           </div>
 
           <ViewProjectPanel
+            open={projectView}
+            setOpen={setProjectView}
             response={viewData}
             viewer_id={user?.id}
             creator_id={viewData?.user_id}
@@ -214,18 +187,17 @@ function Projects() {
             authors={viewData && JSON.parse(viewData?.authors)}
             title={viewData?.name}
             categories={viewData?.categories.map((e) => e.category)}
-            thumbnails_source={(viewData) && (viewData.thumbnails != 'null' ? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : console.log('works'))}
+            thumbnails_source={(viewData) && (viewData.thumbnails != 'null' ? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : null)}
             username={userData?.user?.name} //saved for auth context
             date={viewData?.created_at}
             description={viewData?.description}
-            profilePic='SamplePic'
+            profilePic={`${StorageURL}${userData?.profile?.image}`}
             file_type={viewData?.file_extension}
             file_source={`${StorageURL}` + viewData?.file}
             loading={loading}
             like_data={likeData?.id}
             favorite_data={favoriteData?.id}
           />
-        </Sheet>
       </div>
     </>
   )

@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import samplePic from '../assets/sampleProfile.png'
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from '../components/ui/button'
-import { ChevronRight, Heart, Scroll, Star } from 'lucide-react'
+import { ChevronRight, Cloud, FolderOpen, Heart, Star } from 'lucide-react'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import SampleThumbnail from '../assets/SampleThumbnail.jpeg'
 import { checkToken } from '../api/auth'
@@ -13,15 +13,7 @@ import dayjs from 'dayjs'
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-    Sheet,
-    SheetTrigger,
-} from "@/components/ui/sheet"
 import { checkLike } from '../api/likes'
 import { checkFavorite } from '../api/favorites'
 import { show as checkUser } from '../api/profile'
@@ -43,7 +35,7 @@ function Profile() {
     const [userData, setUserData] = useState()
     const [viewMore, setViewMore] = useState(false)
     const params = useParams()
-    const [openPanel, setOpenPanel] = useState(false)
+    const [projectView, setProjectView] = useState(false)
 
 
     const [likeData, setLikeData] = useState()
@@ -117,13 +109,124 @@ function Profile() {
 
     return (
         <>
-            <Sheet open={openPanel} onOpenChange={setOpenPanel}>
-                <div className='flex h-screen bg-[#D4D4D4]'>
+            <div className='flex h-screen bg-[#D4D4D4]'>
 
-                    {/* Profile and Projects Container */}
-                    <div className='w-1/3 h-full flex flex-col items-center justify-between 2xl:justify-normal 2xl:gap-12 bg-[#bcbcbc] p-8'>
-                        {loadingUser ?
-                            <div className="w-full h-full flex justify-center items-center">
+                {/* Profile and Projects Container */}
+                <div className='w-1/3 h-full flex flex-col items-center justify-between 2xl:justify-normal 2xl:gap-12 bg-[#bcbcbc] p-8'>
+                    {loadingUser ?
+                        <div className="w-full h-full flex justify-center items-center">
+                            <Oval
+                                height="120"
+                                width="120"
+                                color="#622C2C"
+                                secondaryColor="#D1C1C1"
+                                ariaLabel="oval-loading"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                            />
+                        </div>
+                        :
+
+                        <>
+                            {/* Profile */}
+                            <div className='flex flex-col items-center gap-3'>
+                                <div className='flex flex-col items-center'>
+                                    <Avatar className='size-20 md:size-28 lg:size-36 xl:size-38 2xl:size-44 shadow-md'>
+                                        <AvatarImage src={`${StorageURL}${userData?.profile?.image}`} />
+                                        <AvatarFallback><img src={`../../${userData?.profile?.gender}Fallback.png`} /></AvatarFallback>
+                                    </Avatar>
+                                    <h3 className='font-medium font-[Inter] text-[12px] md:text-lg xl:text-xl 2xl:text-3xl'>{userData?.name}</h3>
+                                    <h4 className='font-medium font-[Inter] text-[10px] md:text-sm xl:text-md 2xl:text-xl text-center text-[#4c4c4c]'>{`${userData?.profile?.first_name} ${userData?.profile?.middle_name ? userData?.profile?.middle_name : ''} ${userData?.profile?.last_name} ${userData?.profile?.affix ? userData?.profile.affix : ''}`}</h4>
+                                </div>
+                            </div>
+
+                            {/* Projects */}
+                            <div className='w-full h-14 xl:h-2/3 xl:flex-col xl:items-start xl:justify-normal flex flex-row gap-2 justify-between items-center rounded-xl bg-neutral-800 p-5 ' >
+                                <div className='w-full flex flex-row items-center justify-between'>
+                                    <h3 className='text-white text-md xl:text-xl 2xl:text-2xl'>Projects</h3>
+
+                                    <Button onClick={() => setViewMore(true)} className='hover:bg-zinc-900 bg-transparent p-2'><ChevronRight /></Button>
+                                </div>
+                                {loadingRecent ?
+                                    <div className="w-full h-96 flex justify-center items-center">
+                                        <Oval
+                                            height="120"
+                                            width="120"
+                                            color="#622C2C"
+                                            secondaryColor="#D1C1C1"
+                                            ariaLabel="oval-loading"
+                                            wrapperStyle={{}}
+                                            wrapperClass=""
+                                        />
+                                    </div>
+                                    :
+                                    <>
+                                        {recentProjects?.length === 0 ?
+
+                                            <div className='w-full h-full hidden xl:flex flex-col justify-start items-center'>
+                                                <FolderOpen strokeWidth={0.2} className='size-48 stroke-white' />
+                                                <span className='text-white'>
+                                                    This user currently has no projects
+                                                </span>
+                                            </div>
+                                            :
+                                            <>
+
+                                                <div className='hidden w-full xl:flex flex-wrap justify-center gap-2 '>
+                                                    {recentProjects?.slice(0, 3).map((project) =>
+                                                        <div key={project.id}>
+                                                            <img onClick={() => {
+                                                                onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)
+                                                                setProjectView(true)
+                                                            }} key={project?.id} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='w-[170px] hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all aspect-video object-cover rounded-md shadow-md'></img>
+                                                        </div>
+                                                    )}
+                                                    {recentProjects?.length >= 3 && recentProjects?.slice(3, 6).map((project) =>
+                                                        /* In the case there is more than 2 projects made that may or may not fit in the screen*/
+                                                        <div key={project.id}>
+                                                            <img onClick={() => {
+                                                                onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)
+                                                                setProjectView(true)
+                                                            }}
+                                                                key={project?.id}
+                                                                src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'}
+                                                                className='hidden  w-[170px] hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all aspect-video 2xl:block object-cover rounded-md shadow-md'></img>
+                                                        </div>
+                                                    )}
+                                                    {recentProjects?.length >= 6 && recentProjects?.slice(6, 9).map((project) =>
+                                                        /* In the case there is more than 2 projects made that may or may not fit in the screen*/
+                                                        <div key={project.id}>
+                                                            <img
+                                                                onClick={
+                                                                    () => {
+                                                                        onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)
+                                                                        setProjectView(true)
+                                                                    }}
+                                                                key={project?.id}
+                                                                src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'}
+                                                                className='hidden  w-[170px] hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all 3xl:block object-cover rounded-md shadow-md'></img>
+                                                        </div>
+                                                    )}
+                                                    {/* In the case there is more than 4 projects made that may or may not fit in the screen*/}
+                                                </div>
+                                            </>
+                                        }
+                                    </>
+
+                                }
+
+                            </div>
+                        </>
+                    }
+                </div>
+
+                {/* Recently Uploaded Projects Container */}
+                <ScrollArea className='w-2/3'>
+                    <div className='px-10 pt-5 flex flex-col gap-4 w-full h-full'>
+                        <h1 className='font-medium font-[Inter] text-md md: text-xl xl:text-2xl 2xl:text-3xl'>Uploads</h1>
+
+                        {loadingRecent ?
+                            <div className="w-full h-96 flex justify-center items-center">
                                 <Oval
                                     height="120"
                                     width="120"
@@ -135,86 +238,13 @@ function Profile() {
                                 />
                             </div>
                             :
-
                             <>
-                                {/* Profile */}
-                                <div className='flex flex-col items-center gap-3'>
-                                    <div className='flex flex-col items-center'>
-                                        <Avatar className='size-20 md:size-28 lg:size-36 xl:size-38 2xl:size-44 shadow-md'>
-                                            <AvatarImage src={`${StorageURL}${userData?.profile?.image}`} />
-                                            <AvatarFallback><img src={`../../${userData?.profile?.gender}Fallback.png`} /></AvatarFallback>
-                                        </Avatar>
-                                        <h3 className='font-medium font-[Inter] text-[12px] md:text-lg xl:text-xl 2xl:text-3xl'>{userData?.name}</h3>
-                                        <h4 className='font-medium font-[Inter] text-[10px] md:text-sm xl:text-md 2xl:text-xl text-center text-[#4c4c4c]'>{`${userData?.profile?.first_name} ${userData?.profile?.middle_name ? userData?.profile?.middle_name : ''} ${userData?.profile?.last_name} ${userData?.profile?.affix ? userData?.profile.affix : ''}`}</h4>
+                                {recentProjects?.length === 0 ?
+                                    <div className='w-full h-full flex flex-col items-center'>
+                                        <Cloud strokeWidth={0.3} className='size-48 stroke-stone-600' />
+                                        <span className='text-xl font-medium text-stone-600'>No project posts so far...</span>
                                     </div>
-                                </div>
-
-                                {/* Projects */}
-                                <div className='w-full h-14 xl:h-2/3 xl:flex-col xl:items-start xl:justify-normal flex flex-row gap-2 justify-between items-center rounded-xl bg-neutral-800 p-5 ' >
-                                    <div className='w-full flex flex-row items-center justify-between'>
-                                        <h3 className='text-white text-md xl:text-xl 2xl:text-2xl'>Projects</h3>
-
-                                        <Button onClick={() => setViewMore(true)} className='hover:bg-zinc-900 bg-transparent p-2'><ChevronRight /></Button>
-                                    </div>
-                                    {loadingRecent ?
-                                <div className="w-full h-96 flex justify-center items-center">
-                                    <Oval
-                                        height="120"
-                                        width="120"
-                                        color="#622C2C"
-                                        secondaryColor="#D1C1C1"
-                                        ariaLabel="oval-loading"
-                                        wrapperStyle={{}}
-                                        wrapperClass=""
-                                    />
-                                </div>
-                                :
-                                    <div className='hidden w-full xl:flex flex-wrap justify-center gap-2 '>
-                                        {recentProjects?.slice(0, 3).map((project) =>
-                                            <SheetTrigger key={project.id}>
-                                                <img onClick={() => onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)} key={project?.id} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='w-[170px] hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all aspect-video object-cover rounded-md shadow-md'></img>
-                                            </SheetTrigger>
-                                        )}
-                                        {recentProjects?.length >= 3 && recentProjects?.slice(3, 6).map((project) =>
-                                            /* In the case there is more than 2 projects made that may or may not fit in the screen*/
-                                            <SheetTrigger key={project.id}>
-                                                <img onClick={() => onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)} key={project?.id} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='hidden  w-[170px] hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all aspect-video 2xl:block object-cover rounded-md shadow-md'></img>
-                                            </SheetTrigger>
-                                        )}
-                                        {recentProjects?.length >= 6 && recentProjects?.slice(6, 9).map((project) =>
-                                            /* In the case there is more than 2 projects made that may or may not fit in the screen*/
-                                            <SheetTrigger key={project.id}>
-                                                <img onClick={() => onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)} key={project?.id} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='hidden  w-[170px] hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all 3xl:block object-cover rounded-md shadow-md'></img>
-                                            </SheetTrigger>
-                                        )}
-                                        {/* In the case there is more than 4 projects made that may or may not fit in the screen*/}
-                                    </div>
-                                    }
-                                </div>
-                            </>
-                        }
-                    </div>
-
-                    {/* Recently Uploaded Projects Container */}
-                    <ScrollArea className='w-2/3'>
-                        <div className='px-10 pt-5 flex flex-col gap-4 w-full h-full'>
-                            <h1 className='font-medium font-[Inter] text-md md: text-xl xl:text-2xl 2xl:text-3xl'>Uploads</h1>
-
-                            {loadingRecent ?
-                                <div className="w-full h-96 flex justify-center items-center">
-                                    <Oval
-                                        height="120"
-                                        width="120"
-                                        color="#622C2C"
-                                        secondaryColor="#D1C1C1"
-                                        ariaLabel="oval-loading"
-                                        wrapperStyle={{}}
-                                        wrapperClass=""
-                                    />
-                                </div>
-                                :
-                                <>
-                                    {recentProjects && recentProjects?.map((project) =>
+                                    : recentProjects?.map((project) =>
                                         <div key={project?.id} className='flex flex-col gap-3 items-center'>
                                             <div className='flex flex-col gap-2'>
                                                 <div className='flex items-center gap-1'>
@@ -237,53 +267,58 @@ function Profile() {
                                             </div>
                                         </div>
                                     )}
-                                </>
-                            }
-                        </div>
-                    </ScrollArea>
-                </div >
-                <Dialog open={viewMore} onOpenChange={() => setViewMore(false)} >
-                    <DialogContent className='p-5 gap-0 flex-none max-w-none w-[50vw] h-48 md:h-56 lg:h-60 xl:h-64 2xl:h-80 3xl:h-96'>
-                        <ScrollArea className='h-full  w-full'>
-                            <div asChild className='h-full flex flex-wrap items-start gap-1 content-start justify-evenly'>
-                                {recentProjects && recentProjects?.map((project) =>
-                                    <SheetTrigger key={project.id}>
+                            </>
+                        }
+                    </div>
+                </ScrollArea>
+            </div >
+            <Dialog open={viewMore} onOpenChange={() => setViewMore(false)} >
+                <DialogContent className='p-5 gap-0 flex-none max-w-none w-[50vw] h-48 md:h-56 lg:h-60 xl:h-64 2xl:h-80 3xl:h-96'>
+                    <ScrollArea className='h-full  w-full'>
+                        <div asChild className='h-full flex flex-wrap items-start gap-1 content-start justify-evenly'>
+                            {recentProjects?.length === 0 ?
+                                <div>
+                                    <span>This user currently has no projects</span>
+                                </div>
+                                : recentProjects?.map((project) =>
+                                    <div key={project.id}>
                                         <img
                                             onClick={() => {
-                                                setOpenPanel(true)
                                                 onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)
+                                                setProjectView(true)
                                             }
                                             } alt={project.name} key={project?.id} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='w-[100px] md:w-[120px] lg:w-[140px] xl:w-[160px] 2xl:w-[180px] 3xl:w-[200px] hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all aspect-video object-cover rounded-md  shadow-md'></img>
-                                    </SheetTrigger>
+                                    </div>
                                 )}
-                            </div>
-                        </ScrollArea>
-                    </DialogContent>
-                </Dialog>
-                <ViewProjectPanel
-                    response={viewData}
-                    id={viewData?.id}
-                    viewer_id={user?.id}
-                    gender={userProjectData?.profile?.gender}
-                    creator_id={viewData?.user_id}
-                    fave_count={viewData?.user_favorites_count}
-                    like_count={viewData?.user_likes_count}
-                    file_icon={`${StorageURL}${viewData?.file_icon}`}
-                    authors={viewData && JSON.parse(viewData?.authors)}
-                    title={viewData?.name}
-                    categories={viewData?.categories.map((e) => e.category)}
-                    thumbnails_source={(viewData) && (viewData.thumbnails != 'null' ? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : null)}
-                    username={userProjectData?.user?.name} //saved for auth context
-                    date={viewData?.created_at}
-                    description={viewData?.description}
-                    profilePic={userProjectData?.user?.image}
-                    file_type={viewData?.file_extension}
-                    file_source={`${StorageURL}` + viewData?.file}
-                    loading={loading}
-                    like_data={likeData?.id}
-                    favorite_data={favoriteData?.id}
-                />
-            </Sheet>
+                        </div>
+                    </ScrollArea>
+                </DialogContent>
+            </Dialog>
+            <ViewProjectPanel
+                open={projectView}
+                setOpen={setProjectView}
+                response={viewData}
+                id={viewData?.id}
+                viewer_id={user?.id}
+                gender={userProjectData?.profile?.gender}
+                creator_id={viewData?.user_id}
+                fave_count={viewData?.user_favorites_count}
+                like_count={viewData?.user_likes_count}
+                file_icon={`${StorageURL}${viewData?.file_icon}`}
+                authors={viewData && JSON.parse(viewData?.authors)}
+                title={viewData?.name}
+                categories={viewData?.categories.map((e) => e.category)}
+                thumbnails_source={(viewData) && (viewData.thumbnails != 'null' ? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : null)}
+                username={userProjectData?.user?.name} //saved for auth context
+                date={viewData?.created_at}
+                description={viewData?.description}
+                profilePic={`${StorageURL}${userProjectData?.profile?.image}`}
+                file_type={viewData?.file_extension}
+                file_source={`${StorageURL}` + viewData?.file}
+                loading={loading}
+                like_data={likeData?.id}
+                favorite_data={favoriteData?.id}
+            />
         </>
     )
 }

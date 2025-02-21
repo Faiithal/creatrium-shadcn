@@ -1,24 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import samplePic from '../assets/sampleProfile.png'
 import React, { useContext, useEffect, useState } from 'react'
-import { Button } from "../components/ui/button"
 import UploadDialog from "../components/ui/UploadDialog"
-import dayjs from "dayjs"
 import { index as historyIndex } from "../api/history"
 import { userProjects } from "../api/profile"
-import { checkToken } from "../api/auth"
 import { StorageURL } from "../api/configuration"
 import withAuth from "../high-order-component/withAuth"
-import Home from "./Home"
 import { AuthContext } from "../contexts/AuthContext"
 import { useCookies } from "react-cookie"
 import { onOpen } from '../api/onOpen'
-import {
-    Sheet,
-    SheetTrigger,
-} from "@/components/ui/sheet"
 import ViewProjectPanel from "../components/ui/ViewProjectPanel"
 import { Oval } from 'react-loader-spinner'
+import { BookDashed, FolderHeart, FolderOpen } from "lucide-react"
 
 function ClientHome() {
     const [recentViewed, setRecentViewed] = useState()
@@ -36,17 +28,20 @@ function ClientHome() {
     const [loadingHistory, setLoadingHistory] = useState(true)
     const token = cookies.token
 
+    const [projectView, setProjectView] = useState(false)
+
     useEffect(() => {
         if (user) {
             getRecentProjects(user?.id)
             getHistory(token)
-
+            console.log(user)
         }
     }, [user])
 
     function getHistory(token) {
         historyIndex(token).then((res) => {
             setRecentViewed(res.data)
+            console.log(res)
         }
         ).finally(() => setLoadingHistory(false))
     }
@@ -54,6 +49,7 @@ function ClientHome() {
     function getRecentProjects(id) {
         userProjects(id).then((res) => {
             setRecentProjects(res.data)
+            console.log(res)
         }
         ).finally(() => setLoadingRecent(false))
     }
@@ -62,27 +58,26 @@ function ClientHome() {
     return (
         <>
             {/* Home Page */}
-            <Sheet>
-                <div className="bg-[#D4D4D4] w-full h-fit 2xl:h-screen ">
-                    <div className='px-16 py-10 flex flex-col gap-y-5 h-full '>
-                        <div className='flex items-center justify-between gap-x-5'>
-                            <div className='flex items-center gap-x-5'>
-                                <Avatar className='size-40'>
-                                    <AvatarImage src={user?.profile?.image} />
-                                    <AvatarFallback><img src={`../../${user?.profile?.gender}Fallback.png`} /></AvatarFallback>
-                                </Avatar>
-                                <h2 className='text-4xl font-[Inter] font-bold'>Welcome {user?.name}!</h2>
-                            </div>
-                            <UploadDialog />
+            <div className="bg-[#D4D4D4] w-full h-fit 2xl:h-screen ">
+                <div className='px-16 py-10 flex flex-col gap-y-5 h-full '>
+                    <div className='flex items-center justify-between gap-x-5'>
+                        <div className='flex items-center gap-x-5'>
+                            <Avatar className='size-40 shadow-md'>
+                                <AvatarImage src={`${StorageURL}${user?.profile?.image}`} />
+                                <AvatarFallback><img src={`../../${user?.profile?.gender}Fallback.png`} /></AvatarFallback>
+                            </Avatar>
+                            <h2 className='text-4xl font-[Inter] font-bold'>Welcome {user?.name}!</h2>
                         </div>
+                        <UploadDialog />
+                    </div>
 
-                        <div className="flex justify-between gap-5 h-full">
+                    <div className="flex justify-between gap-5 h-64 sm:h-80 md:h-[440px] 2xl:h-full">
 
-                            {/* Recently Viewed Projects */}
-                            <div className="w-1/2 rounded-3xl bg-white flex flex-col p-5 gap-3">
-                                <h3 className="font-[Inter] font-medium text-xl">Recently Viewed</h3>
+                        {/* Recently Viewed Projects */}
+                        <div className="w-1/2 rounded-3xl bg-white flex flex-col p-5 gap-3">
+                            <h3 className="font-[Inter] font-medium text-xl">Recently Viewed</h3>
 
-                                {loadingHistory ? 
+                            {loadingHistory ?
                                 <div className="w-full h-full flex justify-center items-center">
                                     <Oval
                                         height="120"
@@ -93,97 +88,119 @@ function ClientHome() {
                                         wrapperStyle={{}}
                                         wrapperClass=""
                                     />
-                                </div> : <>
-
-                                    <div className="flex flex-col 2xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
-                                        {recentViewed?.slice(0, 2).map((project) =>
-                                            <SheetTrigger key={project.id}>
-                                                <img onClick={() => onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='bg-gray-300 hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
-                                            </SheetTrigger>
-                                        )
-                                        }
-                                    </div>
-                                    {recentViewed?.length >= 2 &&
-
-                                        <div className="hidden 2xl:flex justify-center items-start gap-3 2xl:h-1/2">
-                                            {recentViewed?.slice(2, 4).map((project) =>
-                                                <SheetTrigger key={project.id}>
-                                                    <img onClick={() => onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='bg-gray-300 hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
-                                                </SheetTrigger>
-                                            )
-                                            }
+                                </div> :
+                                <>
+                                    {recentViewed.length === 0 ?
+                                        <div className='w-full h-full flex flex-col justify-center items-center'>
+                                            <BookDashed strokeWidth={0.2} className='size-48 stroke-red-900' />
+                                            <span className='font-[Inter] text-lg font-medium text-red-800'>No History yet!</span>
+                                            <span className='font-[Inter] w-72 text-xs font-medium text-red-800 text-wrap text-center'>Start exploring creations made by other students through the projects tab!</span>
                                         </div>
-                                    }
-                                </>
-                                }
-                            </div>
-
-                            {/* Recent Projects */}
-                            <div className="w-1/2 rounded-3xl bg-white flex flex-col p-5 gap-3">
-                                <h3 className='font-[Inter] font-medium text-xl'>Recent Projects</h3>
-
-                                {loadingRecent ?
-                                    <div className="w-full h-full flex justify-center items-center">
-                                        <Oval
-                                            height="120"
-                                            width="120"
-                                            color="#622C2C"
-                                            secondaryColor="#D1C1C1"
-                                            ariaLabel="oval-loading"
-                                            wrapperStyle={{}}
-                                            wrapperClass=""
-                                        />
-                                    </div>
-                                    :
-                                    <>
-                                        <div className="flex flex-col xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
-                                            {recentProjects?.slice(0, 2).map((project) =>
-                                                <SheetTrigger key={project.id}>
-                                                    <img onClick={() => onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='bg-gray-300 hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
-                                                </SheetTrigger>
-                                            )
-                                            }
-                                        </div>
-                                        {recentProjects?.length >= 2 &&
-                                            < div className="hidden xl:flex justify-center items-start gap-3 2xl:h-1/2">
-                                                {recentProjects?.slice(2, 4).map((project) =>
-                                                    <SheetTrigger key={project.id}>
+                                        :
+                                        <>
+                                            <div className="flex flex-col xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
+                                                {recentViewed?.slice(0, 2).map((project) =>
+                                                    <div onClick={() => setProjectView(true)} key={project.id}>
                                                         <img onClick={() => onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='bg-gray-300 hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
-                                                    </SheetTrigger>
+                                                    </div>
                                                 )
                                                 }
                                             </div>
-                                        }
-                                    </>
-                                }
-                            </div>
+                                            {recentViewed?.length >= 2 &&
+
+                                                <div className="hidden xl:flex justify-center items-start gap-3 2xl:h-1/2">
+                                                    {recentViewed?.slice(2, 4).map((project) =>
+                                                        <div onClick={() => setProjectView(true)} key={project.id}>
+                                                            <img onClick={() => onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='bg-gray-300 hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
+                                                        </div>
+                                                    )
+                                                    }
+                                                </div>
+                                            }
+                                        </>
+                                    }
+                                </>
+                            }
+                        </div>
+
+                        {/* Recent Projects */}
+                        <div className="w-1/2 rounded-3xl bg-white flex flex-col p-5 gap-3">
+                            <h3 className='font-[Inter] font-medium text-xl'>Recent Projects</h3>
+
+                            {loadingRecent ?
+                                <div className="w-full h-full flex justify-center items-center">
+                                    <Oval
+                                        height="120"
+                                        width="120"
+                                        color="#622C2C"
+                                        secondaryColor="#D1C1C1"
+                                        ariaLabel="oval-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClass=""
+                                    />
+                                </div>
+                                :
+                                <>
+                                    {recentProjects.length === 0 ?
+                                        <div className='w-full h-full flex flex-col justify-center items-center'>
+                                            <FolderOpen strokeWidth={0.2} className='size-48 stroke-red-900' />
+                                            <span className='font-[Inter] text-lg font-medium text-red-800'>No Projects yet!</span>
+                                            <span className='font-[Inter] w-72 text-xs font-medium text-red-800 text-wrap text-center'>Start sharing your projects to other students through pressing the upload project button above!</span>
+                                        </div>
+                                        :
+                                        <>
+                                            <div className="flex flex-col xl:flex-row justify-center items-center gap-3 2xl:h-1/2">
+                                                {recentProjects?.slice(0, 2).map((project) =>
+                                                    <div onClick={() => setProjectView(true)} key={project.id}>
+                                                        <img onClick={() => onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='bg-gray-300 hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
+                                                    </div>
+                                                )
+                                                }
+                                            </div>
+                                            {recentProjects?.length >= 2 &&
+                                                < div className="hidden xl:flex justify-center items-start gap-3 2xl:h-1/2">
+                                                    {recentProjects?.slice(2, 4).map((project) =>
+                                                        <div onClick={() => setProjectView(true)} key={project.id}>
+                                                            <img onClick={() => onOpen(project.id, setViewData, setUserProjectData, setLikeData, setFavoriteData, setLoading, cookies.token)} src={project.file_icon ? `${StorageURL}${project.file_icon}` : '../public/sample_thumbnail.png'} className='bg-gray-300 hover:bg-white hover:bg-opacity-35 hover:brightness-50 transition-all rounded-md max-w-full w-[19rem] aspect-video object-cover shadow-md'></img>
+                                                        </div>
+                                                    )
+                                                    }
+                                                </div>
+                                            }
+                                        </>
+                                    }
+                                </>
+                            }
                         </div>
                     </div>
-                </div >
-                <ViewProjectPanel
-                    response={viewData}
-                    id={viewData?.id}
-                    viewer_id={user?.id}
-                    gender={userProjectData?.profile?.gender}
-                    creator_id={viewData?.user_id}
-                    fave_count={viewData?.user_favorites_count}
-                    like_count={viewData?.user_likes_count}
-                    file_icon={`${StorageURL}${viewData?.file_icon}`}
-                    authors={viewData && JSON.parse(viewData?.authors)}
-                    title={viewData?.name}
-                    categories={viewData?.categories.map((e) => e.category)}
-                    thumbnails_source={(viewData) && (viewData.thumbnails != 'null' ? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : null)}
-                    username={userProjectData?.user?.name} //saved for auth context
-                    date={viewData?.created_at}
-                    description={viewData?.description}
-                    profilePic='SamplePic'
-                    file_type={viewData?.file_extension}
-                    file_source={`${StorageURL}` + viewData?.file}
-                    loading={loading}
-                    like_data={likeData?.id}
-                    favorite_data={favoriteData?.id}
-                />
-            </Sheet>
+                </div>
+            </div >
+            <ViewProjectPanel
+                open={projectView}
+                setOpen={setProjectView}
+                response={viewData}
+                id={viewData?.id}
+                viewer_id={user?.id}
+                gender={userProjectData?.profile?.gender}
+                creator_id={viewData?.user_id}
+                fave_count={viewData?.user_favorites_count}
+                like_count={viewData?.user_likes_count}
+                file_icon={`${StorageURL}${viewData?.file_icon}`}
+                authors={viewData && JSON.parse(viewData?.authors)}
+                title={viewData?.name}
+                categories={viewData?.categories.map((e) => e.category)}
+                thumbnails_source={(viewData) && (viewData.thumbnails != 'null' ? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : null)}
+                username={userProjectData?.user?.name} //saved for auth context
+                date={viewData?.created_at}
+                description={viewData?.description}
+                profilePic='SamplePic'
+                file_type={viewData?.file_extension}
+                file_source={`${StorageURL}` + viewData?.file}
+                loading={loading}
+                like_data={likeData?.id}
+                favorite_data={favoriteData?.id}
+            />
+
         </>
     )
 }

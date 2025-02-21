@@ -51,7 +51,7 @@ function SearchProject() {
             </div>
             <Sheet>
                 <div className='w-full h-fit flex flex-wrap justify-center'>
-                    
+
                     {searchResults && searchResults?.map((project) =>
                         <>
                             <SheetTrigger key={project.id}>
@@ -66,15 +66,17 @@ function SearchProject() {
                     viewer_id={user?.id}
                     gender={userProjectData?.profile?.gender}
                     creator_id={viewData?.user_id}
+                    fave_count={viewData?.user_favorites_count}
+                    like_count={viewData?.user_likes_count}
                     file_icon={`${StorageURL}${viewData?.file_icon}`}
                     authors={viewData && JSON.parse(viewData?.authors)}
                     title={viewData?.name}
                     categories={viewData?.categories.map((e) => e.category)}
-                    thumbnails_source={(viewData) && (viewData.thumbnails != 'null' ? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : console.log('works'))}
+                    thumbnails_source={(viewData) && (viewData.thumbnails != 'null' ? JSON.parse(viewData?.thumbnails).map((e) => `${StorageURL}` + e) : null)}
                     username={userProjectData?.user?.name}
                     date={viewData?.created_at}
                     description={viewData?.description}
-                    profilePic={userProjectData?.user?.image}
+                    profilePic={`${StorageURL}${userProjectData?.profile?.image}`}
                     file_type={viewData?.file_extension}
                     file_source={`${StorageURL}` + viewData?.file}
                     loading={loading}

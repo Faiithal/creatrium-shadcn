@@ -5,14 +5,19 @@ import logo from '../assets/Creatrium_Logo.png'
 import { useNavigate } from 'react-router-dom'
 import withAuth from '../high-order-component/withAuth'
 import withoutAuth from '../high-order-component/withoutAuth'
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from '@radix-ui/react-separator'
+
 
 function Home() {
 
   const navigate = useNavigate()
 
   return (
-    <div className='w-screen h-screen overflow-y-auto overflow-x-hidden bg-main grid grid-cols-1 grid-rows-1 justify-items-center'>
-      <div className='w-11/12 h-full col-[1] z-[1] flex flex-col gap-14 py-7'>
+    <div className='w-screen h-screen overflow-y-hidden overflow-x-hidden bg-main grid grid-cols-1 grid-rows-1 justify-items-center'>
+
+
+      <div className='w-full h-screen col-[1] z-[1] flex flex-col gap-14 py-7 px-20 overflow-y-scroll'>
         <header className='flex h-24 items-center justify-between'>
           <div className='flex items-center gap-3'>
             <img className='w-6' src={`${logo}`}></img>
@@ -34,9 +39,35 @@ function Home() {
           <Button className='bg-contrast h-10 font-[Inter]' onClick={() => navigate('/register')}>Get Started</Button>
         </div>
         {/* insert content about what the app can offer */}
+
+        <div className='flex flex-col gap-8'>
+          <div className='w-full flex'>
+            <div className='bg-zinc-900 bg-opacity-65 flex rounded-md w-5/9 h-56'>
+              <div className='bg-red-100 h-full w-5/9 rounded-md'></div>
+              <div className='p-5 w-1/2 flex items-center'>
+                <span className='text-white text-xl font-[Inter] font-medium'>Showcase your projects with relative ease</span>
+              </div>
+            </div>
+          </div>
+          <div className='w-full flex justify-end'>
+            <div className='bg-zinc-900 bg-opacity-65 rounded-md w-5/9 h-56 flex justify-end'>
+              <div className='p-5 w-1/2 flex items-center'>
+                <span className='text-white text-xl font-[Inter] font-medium'>User-friendly display that helps viewers easily understand your project</span>
+              </div>
+              <div className='bg-red-100 h-full w-5/9 rounded-md'></div>
+            </div>
+          </div>
+          <div className='w-full flex'>
+            <div className='bg-zinc-900 bg-opacity-65 rounded-md w-5/9 h-56 flex'>
+              <div className='bg-red-100 h-full w-5/9 rounded-md'></div>
+              <div className='p-5 w-1/2 flex items-center'>
+                <span className='text-white text-xl font-[Inter] font-medium'>Bring your projects anywhere</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className='w-full h-[137vh] flex justify-center items-center bg-cover mix-blend-overlay col-[1]' style={{ backgroundImage: `url(${background})` }}>
-      </div>
+      <div className='w-full h-[137vh] flex justify-center items-center bg-cover mix-blend-overlay col-[1]' style={{ backgroundImage: `url(${background})` }}></div>
     </div>
   )
 }

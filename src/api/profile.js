@@ -1,6 +1,7 @@
+import { toast } from "react-toastify";
 import { URL } from "./configuration";
 
-export const show = async(userId) => {
+export const show = async (userId) => {
     const request = await fetch(`${URL}/profile/${userId}`, {
         method: 'GET',
         headers: {
@@ -10,8 +11,8 @@ export const show = async(userId) => {
 
     return await request.json()
 }
- 
-export const userProjects = async(userId) => {
+
+export const userProjects = async (userId) => {
     const request = await fetch(`${URL}/profile/${userId}/projects`, {
         method: 'GET',
         headers: {
@@ -21,16 +22,23 @@ export const userProjects = async(userId) => {
 
     return await request.json()
 }
- 
-export const update = async(body, token) => {
-    const request = await fetch(`${URL}/profile/?_method=PATCH`, {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${token}`
-        },
-        body: body
-    })
 
+export const update = async (body, token) => {
+    const request = await toast.promise(
+        fetch(`${URL}/profile?_method=PATCH`,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: body
+            }),
+        {
+            pending: 'Uploading Project',
+            success: 'Project successfully uploaded!',
+            error: `There's an error in uploading the Project!`
+        }
+    )
     return await request.json()
 }

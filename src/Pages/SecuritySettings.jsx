@@ -25,14 +25,7 @@ function SecuritySettings() {
         body.get('password_confirmation') === '' && body.delete('password_confirmation')
 
         if ([...body.entries()].length > 0)
-            update(body, token).then((res) => {
-                if (res?.ok) {
-                    toast.success('Successfully Updated Profile!')
-                }
-                else {
-                    toast.error('Something went wrong!')
-                }
-            })
+            update(body, token)
         else
             toast.info('No Changes have been made')
     }
@@ -45,7 +38,7 @@ function SecuritySettings() {
                     <AvatarFallback><img src={`../../${user?.profile?.gender}Fallback.png`} /></AvatarFallback>
                 </Avatar>
                 <div className='flex flex-col justify-center'>
-                    <span className='font-[Inter] text-xl'>{user?.name}</span>
+                    <span className='font-[Inter] text-xl font-medium'>{user?.name}</span>
                     <span className='font-[Inter]'>{`${user?.profile?.first_name} ${user?.profile?.middle_name ? user?.profile?.middle_name : ''} ${user?.profile?.last_name} ${user?.profile?.affix ? user?.profile.affix : ''}`}</span>
                 </div>
             </div>

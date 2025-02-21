@@ -24,7 +24,6 @@ export default function CourseComboBox(props) {
 
     useEffect(() => {
         index().then((res) => {
-            console.log(res)
             if (res?.ok) {
                 setCourses(res.data)
             }

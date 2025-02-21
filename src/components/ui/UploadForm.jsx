@@ -1,4 +1,4 @@
-import { React, useState } from 'react'
+import { React, useEffect, useState } from 'react'
 import { Button } from './button'
 import {
     Dialog,
@@ -36,42 +36,46 @@ export default function UploadForm(props) {
             setLoading(true)
             const authors = document.getElementById('authors').value
             const authorsArray = authors && authors.split(',')
-            // console.log(authors.map((e) => e.trim()))
+            // console(e) => e.trim()))
             const body = new FormData(e.target)
             const token = cookies.token
             body.append('type', props.value)
             body.set('visibility', +check)
             authors ? body.set('authors[]', JSON.stringify(authorsArray.map((e) => e.trim()))) : body.delete('authors[]')
 
-            console.log(body.getAll)
             if (category.length !== 0) {
                 category.forEach(e => {
                     body.append('categories[]', e)
                 });
             }
-            console.log(category)
-            console.log(+check)
+
 
             add(body, token).then((res) => {
-                if (res?.ok) {
-                    toast.success("Project Successfully Uploaded")
-                }
-                else {
-                    toast.error("Invalid input. Please ensure all fields are correctly filled.")
+                if (!res?.ok) {
                     setErrors(res?.data)
                 }
-                console.log(res)
             }).finally(() => {
                 setLoading(false)
             })
+            props.setOpen(false)
         }
     }
+
+    useEffect(() => console.log('asdfasdfa'), [props.open])
+
     return (
         <>
+            <Dialog open={props.open} onOpenChange={
+                () => {
+                    props.setOpen(false)
+                    setPreview(null)
+                }}>
+                <Button onClick={() => {
+                    props.setOpen(true)
 
-            <Dialog onOpenChange={() => setPreview(null)}>
-                <DialogTrigger className='bg-transparent h-2/3 w-1/3 text-white border-solid border-white border-2'>{props.type}</DialogTrigger>
-                <DialogContent className='max-2xl:h-2/3 overflow-y-auto'>
+                }
+                } className='bg-transparent hover:bg-zinc-500 h-2/3 w-1/3 text-white border-solid border-white border-2'>{props.type}</Button>
+                <DialogContent className='h-2/3 overflow-y-auto'>
                     <DialogHeader>
                         <DialogTitle>Upload Project</DialogTitle>
                         <DialogDescription>
@@ -80,7 +84,7 @@ export default function UploadForm(props) {
 
                     <form onSubmit={(e) => onCreate(e)} className='flex flex-col items-center gap-5' encType='multipart/form-data'>
 
-                        <div className='w-full flex flex-col gap-2'>
+                        <div className='w-full h-fit flex flex-col gap-2'>
                             <Label>Main Icon {errors?.file_icon && <span className='text-red-500'>*{errors?.file_icon}*</span>}</Label>
                             <div className='w-full flex justify-center'>
                                 {preview &&
@@ -90,7 +94,7 @@ export default function UploadForm(props) {
                             <Input name='file_icon' type='file'
                                 onChange={
                                     (e) => {
-                                        // console.log(URL.createObjectURL(e.target.files))
+                                        // consolee.target.files))
                                         reader.addEventListener(
                                             "load", () => {
                                                 setPreview(reader.result)
@@ -134,7 +138,7 @@ export default function UploadForm(props) {
                             <Label>Authors {errors?.authors && <span className='text-red-500'>*{errors?.authors}*</span>}</Label>
                             <Input id='authors' name='authors[]' type='text' placeholder='Enter authors (e.g., John Doe, Jane Smith, Alex Johnson)'></Input>
                             <Label>Category/Type {errors?.categories && <span className='text-red-500'>*{errors?.categories}*</span>}</Label>
-                            <ComboBox  onSelect={(data) => setCategory(data)} />
+                            <ComboBox onSelect={(data) => setCategory(data)} />
                             <div className='flex gap-2'>
                                 <Checkbox checked={check} onCheckedChange={() => setCheck(!check)} name='visibility' id='visibility' />
                                 <Label htmlFor='visibility'>Show project publicly</Label>
@@ -143,7 +147,7 @@ export default function UploadForm(props) {
                         </div>
                         {/* Ask sir on how to make one button dont do submit */}
                         <DialogFooter className='w-full flex justify-end'>
-                            <DialogClose className='hover:bg-stone-200 rounded-md transition-all px-4 py-2 text-sm font-[Inter]' type='button'>Cancel</DialogClose>
+                            <Button onClick={() => props.setOpen(false)} className='hover:bg-stone-200 bg-white text-black rounded-md transition-all px-4 py-2 text-sm font-[Inter]' type='button'>Cancel</Button>
                             <Button disabled={loading} className='bg-contrast rounded-md hover:bg-highlight transition-all text-white px-4 py-2 text-sm font-[Inter]'>Create</Button>
                         </DialogFooter>
                     </form>

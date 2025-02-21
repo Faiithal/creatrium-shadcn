@@ -1,2 +1,2 @@
-export const URL = "http://127.0.0.1:8000/api"
-export const StorageURL = "http://127.0.0.1:8000/storage/"
+export const URL = "https://api.creatrium.space/api"
+export const StorageURL = "https://api.creatrium.space/storage/"
