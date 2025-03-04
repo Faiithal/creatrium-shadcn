@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         logoutRequest(cookies.token).then((res) => {
-            console.log(res)
             removeCookie('token')
         })
         // add logout link

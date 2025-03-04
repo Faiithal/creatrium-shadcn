@@ -13,7 +13,7 @@ const withAuth = (WrappedComponent) => {
         const navigate = useNavigate()
         const { user, login } = useContext(AuthContext) // Essentially, we're grabbing the values from the global context of user
         const token = cookies.token // grabs the cookie value made by the login
-
+        
         if (!token) {
             return <Navigate to='/' />   
         }
@@ -25,6 +25,7 @@ const withAuth = (WrappedComponent) => {
                     }
                     else {
                         navigate('/')
+                        removeCookie("token")
                     }
                 })
         }

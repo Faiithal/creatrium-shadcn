@@ -136,7 +136,7 @@ function Profile() {
                                         <AvatarFallback><img src={`../../${userData?.profile?.gender}Fallback.png`} /></AvatarFallback>
                                     </Avatar>
                                     <h3 className='font-medium font-[Inter] text-[12px] md:text-lg xl:text-xl 2xl:text-3xl'>{userData?.name}</h3>
-                                    <h4 className='font-medium font-[Inter] text-[10px] md:text-sm xl:text-md 2xl:text-xl text-center text-[#4c4c4c]'>{`${userData?.profile?.first_name} ${userData?.profile?.middle_name ? userData?.profile?.middle_name : ''} ${userData?.profile?.last_name} ${userData?.profile?.affix ? userData?.profile.affix : ''}`}</h4>
+                                    <h4 className='font-medium font-[Inter] text-[10px] md:text-sm xl:text-md 2xl:text-xl text-center text-[#4c4c4c]'>{`${userData?.profile?.first_name} ${userData?.profile?.middle_name ? userData?.profile?.middle_name : ''} ${userData?.profile?.last_name} ${userData?.profile?.suffix ? userData?.profile.suffix : ''}`}</h4>
                                 </div>
                             </div>
 

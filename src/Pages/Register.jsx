@@ -57,7 +57,7 @@ function Register() {
                 first_name: $("#inpFirstName").val(),
                 middle_name: $("#inpMiddleName").val(),
                 last_name: $("#inpLastName").val(),
-                affix: $("#inpAffix").val(),
+                suffix: $("#inpSuffix").val(),
                 section: $("#inpSection").val(),
                 campus: campus,
                 course: course,
@@ -68,8 +68,8 @@ function Register() {
             if (isEmpty(body.middle_name)) {
                 delete body.middle_name
             }
-            if (isEmpty(body.affix)) {
-                delete body.affix
+            if (isEmpty(body.suffix)) {
+                delete body.suffix
             }
 
             setLoading(true)
@@ -128,10 +128,10 @@ function Register() {
                                     <div>
                                         <div className='flex gap-2'>
                                             <Input className='w-2/3' required variant="default" id='inpLastName' placeholder="Last Name" />
-                                            <Input className='w-1/3' variant="default" id='inpAffix' placeholder="Affix. (Optional)" />
+                                            <Input className='w-1/3' variant="default" id='inpSuffix' placeholder="suffix. (Optional)" />
                                         </div>
                                         {errors?.last_name && <span className='text-red-500 text-xs'>{errors?.last_name}</span>}
-                                        {errors?.affix && <span className='text-red-500 text-xs'>{errors?.affix}</span>}
+                                        {errors?.suffix && <span className='text-red-500 text-xs'>{errors?.suffix}</span>}
                                     </div>
 
                                 </div>

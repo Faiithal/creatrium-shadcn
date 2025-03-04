@@ -16,7 +16,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Ellipsis, Heart, LoaderCircle, MessageCircleMore, Star, X } from 'lucide-react'
+import { Ellipsis, Heart, Star, X } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 
@@ -175,8 +175,9 @@ export default function ViewProjectPanel({
                                 wrapperStyle={{}}
                                 wrapperClass=""
                             />
+                        <SheetTitle></SheetTitle>
+                        <SheetDescription></SheetDescription>
                         </div>
-
                         :
 
                         <div className='flex flex-col gap-10 items-center pb-10'>
@@ -207,7 +208,7 @@ export default function ViewProjectPanel({
                                         <div className='w-2/12 h-full flex flex-col items-center justify-center  gap-3'>
                                             {thumbnails_source.map((path) => (
                                                 <div key={path}>
-                                                    <img onClick={() => setMainThumbnail(path)} className='w-[200px]  aspect-video rounded-md object-cover hover:brightness-50 transition-all shadow-md' src={path} />
+                                                    <img onClick={() => setMainThumbnail(path)} className='w-[200px]  aspect-video rounded-md object-cover hover:brightness-50 transition-all shadow-md bg-white' src={path} />
                                                     {/* <div className='w-full h-full hover:bg-stone-400 -z-[-1] relative bottom-20'></div> */}
                                                 </div>
                                             ))}
@@ -216,23 +217,23 @@ export default function ViewProjectPanel({
                                 }
                                 <div className='w-8/12 p-8'>
                                     <AspectRatio ratio={16 / 9}>
-                                        <img src={mainThumbnail ? mainThumbnail : (response?.file_icon ? file_icon : '../../public/sample_thumbnail.png')} className='object-cover w-full h-full rounded-md shadow-xl '></img>
+                                        <img src={mainThumbnail ? mainThumbnail : (response?.file_icon ? file_icon : '../../public/sample_thumbnail.png')} className='object-cover w-full h-full rounded-md shadow-xl bg-white'></img>
                                     </AspectRatio>
                                 </div>
 
                                 {/* Create a variant for this button for a more clean way of coding */}
                                 <div className='w-fit h-full flex flex-col gap-3 items-center py-20'>
-                                    <Button asChild onClick={() => toggleLike()} className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300' size="icon"><Heart fill={like ? '#FF857A' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
+                                    <Button asChild onClick={() => toggleLike()} className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300'><Heart fill={like ? '#FF857A' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
                                     <span className='font-[Inter] text-lg'>{likeCount}</span>
-                                    <Button asChild onClick={() => toggleFavorite()} className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300' size="icon"><Star fill={favorite ? '#FFE97B' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
+                                    <Button asChild onClick={() => toggleFavorite()} className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300'><Star fill={favorite ? '#FFE97B' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
                                     <span className='font-[Inter] text-lg'>{favoriteCount}</span>
-                                    <ViewComment/>
+                                    <ViewComment id={id}/>
                                     {/* Note After authentication is added, check user if they own the project*/}
                                     {
                                         viewer_id === creator_id &&
                                         <Popover>
                                             <PopoverTrigger>
-                                                <Button asChild className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300' size="icon"><Ellipsis fill={favorite ? '#FFE97B' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
+                                                <Button asChild className='size-7 md:size-8 lg:size-9 xl:size-10 2xl:size-12 3xl:size-13 rounded-full bg-transparent shadow-none p-1 lg:p-1.5 hover:bg-stone-300'><Ellipsis fill={favorite ? '#FFE97B' : 'none'} strokeWidth={'1.3px'} color='black' /></Button>
                                             </PopoverTrigger>
                                             <PopoverContent className={cn('h-30 flex flex-col gap-2 items-center w-30 transition-all', deleteView && 'w-48 h-48 ')}>
                                                 {/* Possible problem: Hackers may be able to access private projects through this method */}
@@ -269,13 +270,12 @@ export default function ViewProjectPanel({
                                         {file_type === 'pdf' ?
                                             <object
                                                 data={file_source}
-                                                width="800"
-                                                height="500">
+                                                className='w-[1200px] aspect-video'>
                                             </object>
                                             :
 
                                             response?.file !== '' &&
-                                            < iframe className='w-[800px] aspect-video' src={file_source} title="Website Preview">
+                                            < iframe className='w-[1200px] aspect-video' src={file_source} title="Website Preview">
                                             </iframe>
 
                                         }

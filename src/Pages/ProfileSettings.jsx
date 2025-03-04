@@ -54,7 +54,7 @@ function ProfileSettings() {
                 </Avatar>
                 <div className='flex flex-col justify-center'>
                     <span className='font-[Inter] text-xl font-medium'>{user?.name}</span>
-                    <span className='font-[Inter]'>{`${user?.profile?.first_name} ${user?.profile?.middle_name ? user?.profile?.middle_name : ''} ${user?.profile?.last_name} ${user?.profile?.affix ? user?.profile.affix : ''}`}</span>
+                    <span className='font-[Inter]'>{`${user?.profile?.first_name} ${user?.profile?.middle_name ? user?.profile?.middle_name : ''} ${user?.profile?.last_name} ${user?.profile?.suffix ? user?.profile.suffix : ''}`}</span>
                 </div>
             </div>
             <form onSubmit={(e) => onUpdate(e)} className='px-24 h-fit lg:h-full flex flex-col pb-20 xl:pb-0' encType='multipart/form-data'>
@@ -68,8 +68,8 @@ function ProfileSettings() {
                         <Input defaultValue={user?.profile?.middle_name} name='middle_name' className='w-full bg-white' />
                         <Label>Last Name</Label>
                         <Input defaultValue={user?.profile?.last_name} name='last_name' className='w-full bg-white' />
-                        <Label>Affix</Label>
-                        <Input defaultValue={user?.profile?.affix} name='affix' className='w-full bg-white' />
+                        <Label>Suffix</Label>
+                        <Input defaultValue={user?.profile?.suffix} name='suffix' className='w-full bg-white' />
                     </div>
                     <div className='w-full h-full lg:pt-10 flex flex-col gap-4 xl:justify-between'>
                         <div className='flex flex-col gap-3'>

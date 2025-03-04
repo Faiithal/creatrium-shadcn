@@ -10,7 +10,7 @@ import { useCookies } from "react-cookie"
 import { onOpen } from '../api/onOpen'
 import ViewProjectPanel from "../components/ui/ViewProjectPanel"
 import { Oval } from 'react-loader-spinner'
-import { BookDashed, FolderHeart, FolderOpen } from "lucide-react"
+import { BookDashed, FolderOpen } from "lucide-react"
 
 function ClientHome() {
     const [recentViewed, setRecentViewed] = useState()
@@ -34,14 +34,12 @@ function ClientHome() {
         if (user) {
             getRecentProjects(user?.id)
             getHistory(token)
-            console.log(user)
         }
     }, [user])
 
     function getHistory(token) {
         historyIndex(token).then((res) => {
             setRecentViewed(res.data)
-            console.log(res)
         }
         ).finally(() => setLoadingHistory(false))
     }
@@ -49,7 +47,6 @@ function ClientHome() {
     function getRecentProjects(id) {
         userProjects(id).then((res) => {
             setRecentProjects(res.data)
-            console.log(res)
         }
         ).finally(() => setLoadingRecent(false))
     }
@@ -92,7 +89,7 @@ function ClientHome() {
                                 <>
                                     {recentViewed.length === 0 ?
                                         <div className='w-full h-full flex flex-col justify-center items-center'>
-                                            <BookDashed strokeWidth={0.2} className='size-48 stroke-red-900' />
+                                            <BookDashed strokeWidth={0.2} size={48} className='size-48 stroke-red-900' />
                                             <span className='font-[Inter] text-lg font-medium text-red-800'>No History yet!</span>
                                             <span className='font-[Inter] w-72 text-xs font-medium text-red-800 text-wrap text-center'>Start exploring creations made by other students through the projects tab!</span>
                                         </div>
@@ -143,7 +140,7 @@ function ClientHome() {
                                 <>
                                     {recentProjects.length === 0 ?
                                         <div className='w-full h-full flex flex-col justify-center items-center'>
-                                            <FolderOpen strokeWidth={0.2} className='size-48 stroke-red-900' />
+                                            <FolderOpen strokeWidth={0.2} size={48} className='size-48 stroke-red-900' />
                                             <span className='font-[Inter] text-lg font-medium text-red-800'>No Projects yet!</span>
                                             <span className='font-[Inter] w-72 text-xs font-medium text-red-800 text-wrap text-center'>Start sharing your projects to other students through pressing the upload project button above!</span>
                                         </div>
@@ -193,7 +190,7 @@ function ClientHome() {
                 username={userProjectData?.user?.name} //saved for auth context
                 date={viewData?.created_at}
                 description={viewData?.description}
-                profilePic='SamplePic'
+                profilePic={`${StorageURL}${userProjectData?.profile?.image}`}
                 file_type={viewData?.file_extension}
                 file_source={`${StorageURL}` + viewData?.file}
                 loading={loading}
